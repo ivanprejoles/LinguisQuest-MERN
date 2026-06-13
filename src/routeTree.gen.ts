@@ -9,128 +9,200 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as LeaderboardRouteImport } from './routes/leaderboard'
-import { Route as DashboardRouteImport } from './routes/dashboard'
-import { Route as AchievementsRouteImport } from './routes/achievements'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as LessonsStageIdRouteImport } from './routes/lessons.$stageId'
-import { Route as LessonLessonIdRouteImport } from './routes/lesson.$lessonId'
+import { Route as UserScenariosIndexRouteImport } from './routes/user/scenarios/index'
+import { Route as UserLeaderboardIndexRouteImport } from './routes/user/leaderboard/index'
+import { Route as UserFoundationIndexRouteImport } from './routes/user/foundation/index'
+import { Route as UserDashboardIndexRouteImport } from './routes/user/dashboard/index'
+import { Route as UserAiConversionIndexRouteImport } from './routes/user/ai-conversion/index'
+import { Route as UserAchievementsIndexRouteImport } from './routes/user/achievements/index'
+import { Route as AdminScenariosIndexRouteImport } from './routes/admin/scenarios/index'
+import { Route as AdminFoundationIndexRouteImport } from './routes/admin/foundation/index'
+import { Route as AdminDashboardIndexRouteImport } from './routes/admin/dashboard/index'
+import { Route as AdminAiConversionIndexRouteImport } from './routes/admin/ai-conversion/index'
+import { Route as UserFoundationLessonsStageIdRouteImport } from './routes/user/foundation/lessons.$stageId'
+import { Route as UserFoundationLessonLessonIdRouteImport } from './routes/user/foundation/lesson.$lessonId'
 
-const LeaderboardRoute = LeaderboardRouteImport.update({
-  id: '/leaderboard',
-  path: '/leaderboard',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DashboardRoute = DashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AchievementsRoute = AchievementsRouteImport.update({
-  id: '/achievements',
-  path: '/achievements',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LessonsStageIdRoute = LessonsStageIdRouteImport.update({
-  id: '/lessons/$stageId',
-  path: '/lessons/$stageId',
+const UserScenariosIndexRoute = UserScenariosIndexRouteImport.update({
+  id: '/user/scenarios/',
+  path: '/user/scenarios/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LessonLessonIdRoute = LessonLessonIdRouteImport.update({
-  id: '/lesson/$lessonId',
-  path: '/lesson/$lessonId',
+const UserLeaderboardIndexRoute = UserLeaderboardIndexRouteImport.update({
+  id: '/user/leaderboard/',
+  path: '/user/leaderboard/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const UserFoundationIndexRoute = UserFoundationIndexRouteImport.update({
+  id: '/user/foundation/',
+  path: '/user/foundation/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UserDashboardIndexRoute = UserDashboardIndexRouteImport.update({
+  id: '/user/dashboard/',
+  path: '/user/dashboard/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UserAiConversionIndexRoute = UserAiConversionIndexRouteImport.update({
+  id: '/user/ai-conversion/',
+  path: '/user/ai-conversion/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UserAchievementsIndexRoute = UserAchievementsIndexRouteImport.update({
+  id: '/user/achievements/',
+  path: '/user/achievements/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminScenariosIndexRoute = AdminScenariosIndexRouteImport.update({
+  id: '/admin/scenarios/',
+  path: '/admin/scenarios/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminFoundationIndexRoute = AdminFoundationIndexRouteImport.update({
+  id: '/admin/foundation/',
+  path: '/admin/foundation/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminDashboardIndexRoute = AdminDashboardIndexRouteImport.update({
+  id: '/admin/dashboard/',
+  path: '/admin/dashboard/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminAiConversionIndexRoute = AdminAiConversionIndexRouteImport.update({
+  id: '/admin/ai-conversion/',
+  path: '/admin/ai-conversion/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UserFoundationLessonsStageIdRoute =
+  UserFoundationLessonsStageIdRouteImport.update({
+    id: '/user/foundation/lessons/$stageId',
+    path: '/user/foundation/lessons/$stageId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const UserFoundationLessonLessonIdRoute =
+  UserFoundationLessonLessonIdRouteImport.update({
+    id: '/user/foundation/lesson/$lessonId',
+    path: '/user/foundation/lesson/$lessonId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/achievements': typeof AchievementsRoute
-  '/dashboard': typeof DashboardRoute
-  '/leaderboard': typeof LeaderboardRoute
-  '/lesson/$lessonId': typeof LessonLessonIdRoute
-  '/lessons/$stageId': typeof LessonsStageIdRoute
+  '/admin/ai-conversion/': typeof AdminAiConversionIndexRoute
+  '/admin/dashboard/': typeof AdminDashboardIndexRoute
+  '/admin/foundation/': typeof AdminFoundationIndexRoute
+  '/admin/scenarios/': typeof AdminScenariosIndexRoute
+  '/user/achievements/': typeof UserAchievementsIndexRoute
+  '/user/ai-conversion/': typeof UserAiConversionIndexRoute
+  '/user/dashboard/': typeof UserDashboardIndexRoute
+  '/user/foundation/': typeof UserFoundationIndexRoute
+  '/user/leaderboard/': typeof UserLeaderboardIndexRoute
+  '/user/scenarios/': typeof UserScenariosIndexRoute
+  '/user/foundation/lesson/$lessonId': typeof UserFoundationLessonLessonIdRoute
+  '/user/foundation/lessons/$stageId': typeof UserFoundationLessonsStageIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/achievements': typeof AchievementsRoute
-  '/dashboard': typeof DashboardRoute
-  '/leaderboard': typeof LeaderboardRoute
-  '/lesson/$lessonId': typeof LessonLessonIdRoute
-  '/lessons/$stageId': typeof LessonsStageIdRoute
+  '/admin/ai-conversion': typeof AdminAiConversionIndexRoute
+  '/admin/dashboard': typeof AdminDashboardIndexRoute
+  '/admin/foundation': typeof AdminFoundationIndexRoute
+  '/admin/scenarios': typeof AdminScenariosIndexRoute
+  '/user/achievements': typeof UserAchievementsIndexRoute
+  '/user/ai-conversion': typeof UserAiConversionIndexRoute
+  '/user/dashboard': typeof UserDashboardIndexRoute
+  '/user/foundation': typeof UserFoundationIndexRoute
+  '/user/leaderboard': typeof UserLeaderboardIndexRoute
+  '/user/scenarios': typeof UserScenariosIndexRoute
+  '/user/foundation/lesson/$lessonId': typeof UserFoundationLessonLessonIdRoute
+  '/user/foundation/lessons/$stageId': typeof UserFoundationLessonsStageIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/achievements': typeof AchievementsRoute
-  '/dashboard': typeof DashboardRoute
-  '/leaderboard': typeof LeaderboardRoute
-  '/lesson/$lessonId': typeof LessonLessonIdRoute
-  '/lessons/$stageId': typeof LessonsStageIdRoute
+  '/admin/ai-conversion/': typeof AdminAiConversionIndexRoute
+  '/admin/dashboard/': typeof AdminDashboardIndexRoute
+  '/admin/foundation/': typeof AdminFoundationIndexRoute
+  '/admin/scenarios/': typeof AdminScenariosIndexRoute
+  '/user/achievements/': typeof UserAchievementsIndexRoute
+  '/user/ai-conversion/': typeof UserAiConversionIndexRoute
+  '/user/dashboard/': typeof UserDashboardIndexRoute
+  '/user/foundation/': typeof UserFoundationIndexRoute
+  '/user/leaderboard/': typeof UserLeaderboardIndexRoute
+  '/user/scenarios/': typeof UserScenariosIndexRoute
+  '/user/foundation/lesson/$lessonId': typeof UserFoundationLessonLessonIdRoute
+  '/user/foundation/lessons/$stageId': typeof UserFoundationLessonsStageIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/achievements'
-    | '/dashboard'
-    | '/leaderboard'
-    | '/lesson/$lessonId'
-    | '/lessons/$stageId'
+    | '/admin/ai-conversion/'
+    | '/admin/dashboard/'
+    | '/admin/foundation/'
+    | '/admin/scenarios/'
+    | '/user/achievements/'
+    | '/user/ai-conversion/'
+    | '/user/dashboard/'
+    | '/user/foundation/'
+    | '/user/leaderboard/'
+    | '/user/scenarios/'
+    | '/user/foundation/lesson/$lessonId'
+    | '/user/foundation/lessons/$stageId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/achievements'
-    | '/dashboard'
-    | '/leaderboard'
-    | '/lesson/$lessonId'
-    | '/lessons/$stageId'
+    | '/admin/ai-conversion'
+    | '/admin/dashboard'
+    | '/admin/foundation'
+    | '/admin/scenarios'
+    | '/user/achievements'
+    | '/user/ai-conversion'
+    | '/user/dashboard'
+    | '/user/foundation'
+    | '/user/leaderboard'
+    | '/user/scenarios'
+    | '/user/foundation/lesson/$lessonId'
+    | '/user/foundation/lessons/$stageId'
   id:
     | '__root__'
     | '/'
-    | '/achievements'
-    | '/dashboard'
-    | '/leaderboard'
-    | '/lesson/$lessonId'
-    | '/lessons/$stageId'
+    | '/admin/ai-conversion/'
+    | '/admin/dashboard/'
+    | '/admin/foundation/'
+    | '/admin/scenarios/'
+    | '/user/achievements/'
+    | '/user/ai-conversion/'
+    | '/user/dashboard/'
+    | '/user/foundation/'
+    | '/user/leaderboard/'
+    | '/user/scenarios/'
+    | '/user/foundation/lesson/$lessonId'
+    | '/user/foundation/lessons/$stageId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AchievementsRoute: typeof AchievementsRoute
-  DashboardRoute: typeof DashboardRoute
-  LeaderboardRoute: typeof LeaderboardRoute
-  LessonLessonIdRoute: typeof LessonLessonIdRoute
-  LessonsStageIdRoute: typeof LessonsStageIdRoute
+  AdminAiConversionIndexRoute: typeof AdminAiConversionIndexRoute
+  AdminDashboardIndexRoute: typeof AdminDashboardIndexRoute
+  AdminFoundationIndexRoute: typeof AdminFoundationIndexRoute
+  AdminScenariosIndexRoute: typeof AdminScenariosIndexRoute
+  UserAchievementsIndexRoute: typeof UserAchievementsIndexRoute
+  UserAiConversionIndexRoute: typeof UserAiConversionIndexRoute
+  UserDashboardIndexRoute: typeof UserDashboardIndexRoute
+  UserFoundationIndexRoute: typeof UserFoundationIndexRoute
+  UserLeaderboardIndexRoute: typeof UserLeaderboardIndexRoute
+  UserScenariosIndexRoute: typeof UserScenariosIndexRoute
+  UserFoundationLessonLessonIdRoute: typeof UserFoundationLessonLessonIdRoute
+  UserFoundationLessonsStageIdRoute: typeof UserFoundationLessonsStageIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/leaderboard': {
-      id: '/leaderboard'
-      path: '/leaderboard'
-      fullPath: '/leaderboard'
-      preLoaderRoute: typeof LeaderboardRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/dashboard': {
-      id: '/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/achievements': {
-      id: '/achievements'
-      path: '/achievements'
-      fullPath: '/achievements'
-      preLoaderRoute: typeof AchievementsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -138,18 +210,88 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/lessons/$stageId': {
-      id: '/lessons/$stageId'
-      path: '/lessons/$stageId'
-      fullPath: '/lessons/$stageId'
-      preLoaderRoute: typeof LessonsStageIdRouteImport
+    '/user/scenarios/': {
+      id: '/user/scenarios/'
+      path: '/user/scenarios'
+      fullPath: '/user/scenarios/'
+      preLoaderRoute: typeof UserScenariosIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/lesson/$lessonId': {
-      id: '/lesson/$lessonId'
-      path: '/lesson/$lessonId'
-      fullPath: '/lesson/$lessonId'
-      preLoaderRoute: typeof LessonLessonIdRouteImport
+    '/user/leaderboard/': {
+      id: '/user/leaderboard/'
+      path: '/user/leaderboard'
+      fullPath: '/user/leaderboard/'
+      preLoaderRoute: typeof UserLeaderboardIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/user/foundation/': {
+      id: '/user/foundation/'
+      path: '/user/foundation'
+      fullPath: '/user/foundation/'
+      preLoaderRoute: typeof UserFoundationIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/user/dashboard/': {
+      id: '/user/dashboard/'
+      path: '/user/dashboard'
+      fullPath: '/user/dashboard/'
+      preLoaderRoute: typeof UserDashboardIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/user/ai-conversion/': {
+      id: '/user/ai-conversion/'
+      path: '/user/ai-conversion'
+      fullPath: '/user/ai-conversion/'
+      preLoaderRoute: typeof UserAiConversionIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/user/achievements/': {
+      id: '/user/achievements/'
+      path: '/user/achievements'
+      fullPath: '/user/achievements/'
+      preLoaderRoute: typeof UserAchievementsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/scenarios/': {
+      id: '/admin/scenarios/'
+      path: '/admin/scenarios'
+      fullPath: '/admin/scenarios/'
+      preLoaderRoute: typeof AdminScenariosIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/foundation/': {
+      id: '/admin/foundation/'
+      path: '/admin/foundation'
+      fullPath: '/admin/foundation/'
+      preLoaderRoute: typeof AdminFoundationIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/dashboard/': {
+      id: '/admin/dashboard/'
+      path: '/admin/dashboard'
+      fullPath: '/admin/dashboard/'
+      preLoaderRoute: typeof AdminDashboardIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/ai-conversion/': {
+      id: '/admin/ai-conversion/'
+      path: '/admin/ai-conversion'
+      fullPath: '/admin/ai-conversion/'
+      preLoaderRoute: typeof AdminAiConversionIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/user/foundation/lessons/$stageId': {
+      id: '/user/foundation/lessons/$stageId'
+      path: '/user/foundation/lessons/$stageId'
+      fullPath: '/user/foundation/lessons/$stageId'
+      preLoaderRoute: typeof UserFoundationLessonsStageIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/user/foundation/lesson/$lessonId': {
+      id: '/user/foundation/lesson/$lessonId'
+      path: '/user/foundation/lesson/$lessonId'
+      fullPath: '/user/foundation/lesson/$lessonId'
+      preLoaderRoute: typeof UserFoundationLessonLessonIdRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -157,12 +299,29 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AchievementsRoute: AchievementsRoute,
-  DashboardRoute: DashboardRoute,
-  LeaderboardRoute: LeaderboardRoute,
-  LessonLessonIdRoute: LessonLessonIdRoute,
-  LessonsStageIdRoute: LessonsStageIdRoute,
+  AdminAiConversionIndexRoute: AdminAiConversionIndexRoute,
+  AdminDashboardIndexRoute: AdminDashboardIndexRoute,
+  AdminFoundationIndexRoute: AdminFoundationIndexRoute,
+  AdminScenariosIndexRoute: AdminScenariosIndexRoute,
+  UserAchievementsIndexRoute: UserAchievementsIndexRoute,
+  UserAiConversionIndexRoute: UserAiConversionIndexRoute,
+  UserDashboardIndexRoute: UserDashboardIndexRoute,
+  UserFoundationIndexRoute: UserFoundationIndexRoute,
+  UserLeaderboardIndexRoute: UserLeaderboardIndexRoute,
+  UserScenariosIndexRoute: UserScenariosIndexRoute,
+  UserFoundationLessonLessonIdRoute: UserFoundationLessonLessonIdRoute,
+  UserFoundationLessonsStageIdRoute: UserFoundationLessonsStageIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

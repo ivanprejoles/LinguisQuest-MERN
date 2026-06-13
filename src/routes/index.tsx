@@ -19,7 +19,7 @@ function Index() {
             <div className="w-10 h-10 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center font-bold">⚡</div>
             <span className="font-bold text-lg">LinguisQuest</span>
           </div>
-          <Link to="/dashboard" className="px-4 py-2 bg-primary text-primary-foreground rounded-lg font-semibold hover:opacity-90 transition">
+          <Link to="/user/dashboard" className="px-4 py-2 bg-primary text-primary-foreground rounded-lg font-semibold hover:opacity-90 transition">
             Enter (Guest)
           </Link>
         </div>
@@ -34,10 +34,10 @@ function Index() {
             Interactive lessons, tracing, matching and multiple-choice activities — all open, no sign-in.
           </p>
           <div className="flex gap-4 justify-center">
-            <Link to="/dashboard" className="px-8 py-4 bg-primary text-primary-foreground rounded-lg font-semibold hover:opacity-90 text-lg">
+            <Link to="/user/dashboard" className="px-8 py-4 bg-primary text-primary-foreground rounded-lg font-semibold hover:opacity-90 text-lg">
               Start Learning
             </Link>
-            <Link to="/leaderboard" className="px-8 py-4 border border-primary rounded-lg font-semibold hover:bg-primary/10 text-lg">
+            <Link to="/user/leaderboard" className="px-8 py-4 border border-primary rounded-lg font-semibold hover:bg-primary/10 text-lg">
               View Leaderboard
             </Link>
           </div>
