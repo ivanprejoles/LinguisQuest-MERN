@@ -11,7 +11,7 @@ export default function Navigation({ langCode }: { langCode?: string }) {
               <Zap className="w-6 h-6 text-primary-foreground" />
             </div>
             <span className="font-bold text-lg text-foreground">LinguisQuest</span>
-          </Link>
+          </Link>   
 
           <div className="flex items-center gap-6 text-sm">
             {langCode && (

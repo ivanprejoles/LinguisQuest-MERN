@@ -1,188 +1,381 @@
-    import { createFileRoute, Link, redirect } from "@tanstack/react-router";
-    import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-    import { useState } from "react";
-    import { ArrowLeft, Plus, Trash2, Pencil, Loader2, Save, X, Wrench } from "lucide-react";
-    import { Button } from "@/components/ui/button";
-    import { Input } from "@/components/ui/input";
-    import { Textarea } from "@/components/ui/textarea";
-    import { SortableList } from "@/components/lq/SortableList";
-    import {
-    fetchLanguageByCode,
-    fetchStageById,
-    fetchLessonsByStage,
-    createLesson,
-    updateLesson,
-    deleteLesson,
-    reorderLessons,
-    type Lesson,
-    } from "@/lib/linguisquest";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
+import { ArrowLeft, Plus, Trash2, Loader2, Save, Volume2, Type } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  fetchLanguageByCode,
+  fetchLesson,
+  fetchStage,
+  updateLesson,
+  type Activity,
+} from "@/lib/linguisquest";
 
-    export const Route = createFileRoute("/admin/$langCode/foundation/stage/$stageId")({
-    head: () => ({ meta: [{ title: "Admin · Levels" }] }),
-    beforeLoad: async ({ params }) => {
-        const l = await fetchLanguageByCode(params.langCode);
-        if (!l) throw redirect({ to: "/admin" });
+export const Route = createFileRoute("/admin/language/$langCode/foundation/lesson/$lessonId/stage/$stageId/")({
+  head: () => ({ meta: [{ title: "Admin · Levels" }] }),
+  beforeLoad: async ({ params }) => {
+    const l = await fetchLanguageByCode(params.langCode);
+    if (!l) throw redirect({ to: "/admin" });
+  },
+  component: AdminLessonEditor,
+});
+
+const newId = () => Math.random().toString(36).slice(2, 10);
+
+function emptyActivity(type: Activity["type"]): Activity {
+  if (type === "tracing")
+    return { type: "tracing", question: "Trace the letter or word", content: "A", font: "Arial", audioUrl: "", xpReward: 10 };
+  if (type === "matching")
+    return {
+      type: "matching",
+      question: "Match the pairs",
+      pairs: [
+        { id: newId(), text: "", kind: "text", definition: "", pairKey: "p1" },
+        { id: newId(), text: "", kind: "text", definition: "", pairKey: "p1" },
+      ],
+      xpReward: 15,
+    };
+  return {
+    type: "multipleChoice",
+    question: "",
+    image: "",
+    subject: { kind: "text", value: "", definition: "" },
+    options: [
+      { id: newId(), text: "", isCorrect: true },
+      { id: newId(), text: "", isCorrect: false },
+    ],
+    definition: "",
+    xpReward: 10,
+  };
+}
+
+function AdminStageEditor() {
+  const { langCode, stageId } = Route.useParams();
+  const qc = useQueryClient();
+  const stage = useQuery({ queryKey: ["stage-edit", stageId], queryFn: () => fetchStage(stageId) });
+  const [acts, setActs] = useState<Activity[]>([]);
+  const [dirty, setDirty] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (stage.data) { setActs(stage.data.activities ?? []); setDirty(false); }
+  }, [stage.data]);
+
+  const save = useMutation({
+    mutationFn: async () => {
+      const err = validate(acts);
+      if (err) { setError(err); throw new Error(err); }
+      setError(null);
+      await updateLesson(lessonId, { activities: normalize(acts) });
     },
-    component: AdminStage,
-    });
+    onSuccess: () => { setDirty(false); qc.invalidateQueries({ queryKey: ["lesson-edit", lessonId] }); },
+  });
 
-    function AdminStage() {
-    const { langCode, stageId } = Route.useParams();
-    const qc = useQueryClient();
-    const lang = useQuery({ queryKey: ["language", langCode], queryFn: () => fetchLanguageByCode(langCode) });
-    const stage = useQuery({ queryKey: ["stage-id", stageId], queryFn: () => fetchStageById(stageId) });
-    const lessons = useQuery({
-        queryKey: ["admin-lessons", langCode, stage.data?.stage_number],
-        queryFn: async () =>
-        lang.data && stage.data ? fetchLessonsByStage(lang.data.id, stage.data.stage_number) : [],
-        enabled: !!lang.data && !!stage.data,
-    });
+  const update = (i: number, patch: Partial<Activity>) => {
+    setActs(acts.map((a, idx) => (idx === i ? ({ ...a, ...patch } as Activity) : a)));
+    setDirty(true);
+  };
+  const remove = (i: number) => { setActs(acts.filter((_, idx) => idx !== i)); setDirty(true); };
+  const add = (type: Activity["type"]) => { setActs([...acts, emptyActivity(type)]); setDirty(true); };
 
-    const [creating, setCreating] = useState(false);
-    const [form, setForm] = useState({ title: "", description: "", xp_reward: 50 });
-    const [editId, setEditId] = useState<string | null>(null);
+  if (lesson.isLoading) {
+    return <div className="min-h-screen flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>;
+  }
 
-    const invalidate = () =>
-        qc.invalidateQueries({ queryKey: ["admin-lessons", langCode, stage.data?.stage_number] });
-
-    const addM = useMutation({
-        mutationFn: () =>
-        createLesson({
-            language_id: lang.data!.id,
-            stage_number: stage.data!.stage_number,
-            title: form.title,
-            description: form.description,
-            xp_reward: form.xp_reward,
-        }),
-        onSuccess: () => { setCreating(false); setForm({ title: "", description: "", xp_reward: 50 }); invalidate(); },
-    });
-    const delM = useMutation({ mutationFn: (id: string) => deleteLesson(id), onSuccess: invalidate });
-    const reorderM = useMutation({ mutationFn: (ids: string[]) => reorderLessons(ids) });
-
-    return (
-        <div className="min-h-screen bg-gradient-to-br from-background via-card to-background text-foreground">
-        <header className="border-b border-border bg-card/80 backdrop-blur-md">
-            <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-            <h1 className="text-xl font-bold">Admin · {stage.data?.title ?? "Stage"} · Levels</h1>
-            <Link to="/admin/$langCode/foundation" params={{ langCode }} className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
-                <ArrowLeft className="w-4 h-4" /> Roadmap
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-background via-card to-background text-foreground">
+      <header className="border-b border-border bg-card/80 backdrop-blur-md sticky top-0 z-30">
+        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+          <h1 className="text-xl font-bold truncate">Admin · {lesson.data?.title} · Activities</h1>
+          <div className="flex items-center gap-3">
+            <Link to="/admin/language/$langCode/foundation" params={{ langCode }} className="text-sm text-muted-foreground hover:text-foreground inline-flex items-center gap-2">
+              <ArrowLeft className="w-4 h-4" /> Roadmap
             </Link>
-            </div>
-        </header>
+            <Button onClick={() => save.mutate()} disabled={!dirty || save.isPending}>
+              <Save className="w-4 h-4 mr-1" /> Save
+            </Button>
+          </div>
+        </div>
+        {error && <div className="bg-red-500/20 border-t border-red-500/40 text-red-200 text-sm px-6 py-2">{error}</div>}
+      </header>
 
-        <main className="max-w-5xl mx-auto px-6 py-10 space-y-8">
+      <main className="max-w-5xl mx-auto px-6 py-10 space-y-6">
+        <div className="flex flex-wrap gap-2">
+          <Button variant="secondary" onClick={() => add("matching")}><Plus className="w-4 h-4 mr-1" /> Matching</Button>
+          <Button variant="secondary" onClick={() => add("tracing")}><Plus className="w-4 h-4 mr-1" /> Tracing</Button>
+          <Button variant="secondary" onClick={() => add("multipleChoice")}><Plus className="w-4 h-4 mr-1" /> Multiple choice</Button>
+        </div>
+
+        {acts.length === 0 && <p className="text-muted-foreground">No activities yet. Add one above.</p>}
+
+        {acts.map((a, i) => (
+          <div key={i} className="bg-card border border-border rounded-lg p-5 space-y-3">
             <div className="flex items-center justify-between">
-            <div>
-                <h2 className="text-2xl font-bold">Levels (stepping stones)</h2>
-                <p className="text-sm text-muted-foreground">Drag to reorder. Use “Activities” to author matching, tracing or multiple-choice.</p>
+              <span className="text-xs uppercase tracking-wider text-primary font-bold">{a.type}</span>
+              <Button size="sm" variant="ghost" onClick={() => remove(i)}><Trash2 className="w-4 h-4 text-red-400" /></Button>
             </div>
-            {!creating && (
-                <Button onClick={() => setCreating(true)}>
-                <Plus className="w-4 h-4 mr-1" /> New level
-                </Button>
-            )}
-            </div>
+            {a.type === "tracing" && <TracingEditor a={a} onChange={(p) => update(i, p)} />}
+            {a.type === "matching" && <MatchingEditor a={a} onChange={(p) => update(i, p)} />}
+            {a.type === "multipleChoice" && <MCQEditor a={a} onChange={(p) => update(i, p)} />}
+          </div>
+        ))}
+      </main>
+    </div>
+  );
+}
 
-            {creating && (
-            <div className="bg-card border border-border rounded-lg p-4 space-y-3">
-                <Input placeholder="Title" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
-                <Textarea placeholder="Description" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
-                <div className="flex gap-2 items-center">
-                <span className="text-sm text-muted-foreground">XP reward:</span>
-                <Input type="number" value={form.xp_reward} onChange={(e) => setForm({ ...form, xp_reward: parseInt(e.target.value) || 0 })} className="w-24" />
-                <div className="flex-1" />
-                <Button variant="ghost" onClick={() => setCreating(false)}><X className="w-4 h-4" /></Button>
-                <Button onClick={() => addM.mutate()} disabled={!form.title.trim() || addM.isPending}>
-                    <Save className="w-4 h-4 mr-1" /> Save
-                </Button>
-                </div>
-            </div>
-            )}
+function validate(acts: Activity[]): string | null {
+  return _validate(acts);
+}
 
-            {lessons.isLoading ? (
-            <Loader2 className="w-6 h-6 animate-spin text-primary" />
-            ) : (lessons.data?.length ?? 0) === 0 ? (
-            <p className="text-muted-foreground">No levels yet.</p>
-            ) : (
-            <SortableList
-                items={lessons.data ?? []}
-                onReorder={(ids) => reorderM.mutate(ids)}
-                renderItem={(l) => (
-                <LessonRow
-                    lesson={l}
-                    langCode={langCode}
-                    editing={editId === l.id}
-                    onEditToggle={() => setEditId(editId === l.id ? null : l.id)}
-                    onSaved={() => { setEditId(null); invalidate(); }}
-                    onDelete={() => { if (confirm(`Delete level "${l.title}"?`)) delM.mutate(l.id); }}
-                />
-                )}
-            />
-            )}
-        </main>
-        </div>
-    );
+function normalize(acts: Activity[]): Activity[] {
+  return acts.map((a) => {
+    if (a.type !== "matching") return a;
+    const keys = Array.from(new Set(a.pairs.map((p) => p.pairKey ?? "")));
+    const asA = keys.map((k) => a.pairs.find((p) => p.pairKey === k)!);
+    const asB = keys.map((k) => [...a.pairs].reverse().find((p) => p.pairKey === k)!);
+    return { ...a, pairs: [...asA, ...asB] };
+  });
+}
+
+function _validate(acts: Activity[]): string | null {
+  for (let i = 0; i < acts.length; i++) {
+    const a = acts[i];
+    const tag = `Activity #${i + 1} (${a.type})`;
+    if (a.type === "matching") {
+      const groups = new Map<string, string[]>();
+      for (const p of a.pairs) {
+        if (!p.text.trim()) return `${tag}: every option needs a value.`;
+        const k = p.pairKey ?? "";
+        if (!k) return `${tag}: every option needs a pair key.`;
+        groups.set(k, [...(groups.get(k) ?? []), p.text.trim()]);
+      }
+      for (const [k, vs] of groups) {
+        if (vs.length !== 2) return `${tag}: pair "${k}" must have exactly one Set A and one Set B option (got ${vs.length}).`;
+      }
+      const aVals: string[] = [];
+      const bVals: string[] = [];
+      const order = Array.from(groups.keys());
+      order.forEach((k) => {
+        const items = a.pairs.filter((p) => p.pairKey === k);
+        aVals.push(items[0].text.trim());
+        bVals.push(items[1].text.trim());
+      });
+      if (new Set(aVals).size !== aVals.length) return `${tag}: duplicate values in Set A.`;
+      if (new Set(bVals).size !== bVals.length) return `${tag}: duplicate values in Set B.`;
     }
+    if (a.type === "multipleChoice") {
+      if (!a.question.trim()) return `${tag}: question required.`;
+      if (a.options.length < 2) return `${tag}: need at least 2 options.`;
+      const correct = a.options.filter((o) => o.isCorrect).length;
+      if (correct !== 1) return `${tag}: exactly one option must be marked correct.`;
+      const texts = a.options.map((o) => o.text.trim());
+      if (texts.some((t) => !t)) return `${tag}: every option needs text.`;
+      if (new Set(texts).size !== texts.length) return `${tag}: option text must be unique.`;
+    }
+    if (a.type === "tracing") {
+      if (!a.content.trim()) return `${tag}: tracing content required.`;
+    }
+  }
+  return null;
+}
 
-    function LessonRow({
-    lesson,
-    langCode,
-    editing,
-    onEditToggle,
-    onSaved,
-    onDelete,
-    }: {
-    lesson: Lesson;
-    langCode: string;
-    editing: boolean;
-    onEditToggle: () => void;
-    onSaved: () => void;
-    onDelete: () => void;
-    }) {
-    const [draft, setDraft] = useState(lesson);
-    const save = useMutation({
-        mutationFn: () =>
-        updateLesson(lesson.id, {
-            title: draft.title,
-            description: draft.description,
-            xp_reward: draft.xp_reward,
-        }),
-        onSuccess: onSaved,
+function TracingEditor({ a, onChange }: { a: Extract<Activity, { type: "tracing" }>; onChange: (p: Partial<Activity>) => void }) {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <div>
+        <label className="text-xs text-muted-foreground">Instruction</label>
+        <Input value={a.question} onChange={(e) => onChange({ question: e.target.value })} />
+      </div>
+      <div>
+        <label className="text-xs text-muted-foreground">Character / word to trace</label>
+        <Input value={a.content} onChange={(e) => onChange({ content: e.target.value })} />
+      </div>
+      <div>
+        <label className="text-xs text-muted-foreground">Font family</label>
+        <Input value={a.font ?? "Arial"} onChange={(e) => onChange({ font: e.target.value })} />
+      </div>
+      <div>
+        <label className="text-xs text-muted-foreground">Audio URL (pronunciation)</label>
+        <Input value={a.audioUrl ?? ""} onChange={(e) => onChange({ audioUrl: e.target.value })} placeholder="https://..." />
+      </div>
+      <div>
+        <label className="text-xs text-muted-foreground">XP reward</label>
+        <Input type="number" value={a.xpReward} onChange={(e) => onChange({ xpReward: parseInt(e.target.value) || 0 })} />
+      </div>
+    </div>
+  );
+}
+
+function MatchingEditor({ a, onChange }: { a: Extract<Activity, { type: "matching" }>; onChange: (p: Partial<Activity>) => void }) {
+  // Group pairs by pairKey
+  const keys = Array.from(new Set(a.pairs.map((p) => p.pairKey ?? "")));
+  const rows = keys.map((k) => {
+    const items = a.pairs.filter((p) => p.pairKey === k);
+    return { key: k, A: items[0], B: items[1] };
+  });
+
+  const setPair = (key: string, side: "A" | "B", patch: Partial<typeof a.pairs[number]>) => {
+    const idx = side === "A"
+      ? a.pairs.findIndex((p) => p.pairKey === key)
+      : a.pairs.map((p) => p.pairKey).lastIndexOf(key);
+    const next = a.pairs.map((p, i) => (i === idx ? { ...p, ...patch } : p));
+    onChange({ pairs: next });
+  };
+
+  const addRow = () => {
+    const k = "p" + newId();
+    onChange({
+      pairs: [
+        ...a.pairs,
+        { id: newId(), text: "", kind: "text", definition: "", pairKey: k },
+        { id: newId(), text: "", kind: "text", definition: "", pairKey: k },
+      ],
     });
+  };
+  const removeRow = (key: string) => onChange({ pairs: a.pairs.filter((p) => p.pairKey !== key) });
 
-    if (editing) {
-        return (
-        <div className="bg-card border border-border rounded-lg p-4 space-y-3">
-            <Input value={draft.title} onChange={(e) => setDraft({ ...draft, title: e.target.value })} />
-            <Textarea value={draft.description} onChange={(e) => setDraft({ ...draft, description: e.target.value })} />
-            <div className="flex gap-2 items-center">
-            <span className="text-sm text-muted-foreground">XP:</span>
-            <Input type="number" value={draft.xp_reward} onChange={(e) => setDraft({ ...draft, xp_reward: parseInt(e.target.value) || 0 })} className="w-24" />
-            <div className="flex-1" />
-            <Button variant="ghost" onClick={onEditToggle}><X className="w-4 h-4" /></Button>
-            <Button onClick={() => save.mutate()} disabled={save.isPending}><Save className="w-4 h-4 mr-1" /> Save</Button>
+  return (
+    <div className="space-y-3">
+      <div>
+        <label className="text-xs text-muted-foreground">Question / instruction</label>
+        <Input value={a.question} onChange={(e) => onChange({ question: e.target.value })} />
+      </div>
+      <div className="flex items-center gap-3">
+        <label className="text-xs text-muted-foreground">XP reward</label>
+        <Input type="number" value={a.xpReward} className="w-24" onChange={(e) => onChange({ xpReward: parseInt(e.target.value) || 0 })} />
+      </div>
+
+      <div className="grid grid-cols-12 gap-2 text-xs font-semibold text-muted-foreground px-2">
+        <div className="col-span-5">Set A</div>
+        <div className="col-span-5">Set B</div>
+        <div className="col-span-2"></div>
+      </div>
+
+      {rows.map((r) => (
+        <div key={r.key} className="grid grid-cols-12 gap-2 items-start">
+          <SideEditor className="col-span-5" item={r.A} onPatch={(patch) => setPair(r.key, "A", patch)} />
+          <SideEditor className="col-span-5" item={r.B} onPatch={(patch) => setPair(r.key, "B", patch)} />
+          <div className="col-span-2 flex justify-end pt-2">
+            <Button size="sm" variant="ghost" onClick={() => removeRow(r.key)}>
+              <Trash2 className="w-4 h-4 text-red-400" />
+            </Button>
+          </div>
+        </div>
+      ))}
+
+      <Button variant="secondary" onClick={addRow}>
+        <Plus className="w-4 h-4 mr-1" /> Add pair
+      </Button>
+    </div>
+  );
+}
+
+function SideEditor({
+  item,
+  onPatch,
+  className,
+}: {
+  item: { id: string; text: string; kind?: "text" | "audio"; audioUrl?: string; definition?: string; pairKey?: string };
+  onPatch: (p: Partial<typeof item>) => void;
+  className?: string;
+}) {
+  return (
+    <div className={`bg-muted/30 border border-border rounded-md p-2 space-y-2 ${className ?? ""}`}>
+      <div className="flex gap-2">
+        <Select value={item.kind ?? "text"} onValueChange={(v) => onPatch({ kind: v as "text" | "audio" })}>
+          <SelectTrigger className="w-24"><SelectValue /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="text"><span className="inline-flex items-center gap-1"><Type className="w-3 h-3" /> Text</span></SelectItem>
+            <SelectItem value="audio"><span className="inline-flex items-center gap-1"><Volume2 className="w-3 h-3" /> Audio</span></SelectItem>
+          </SelectContent>
+        </Select>
+        <Input placeholder="Value" value={item.text} onChange={(e) => onPatch({ text: e.target.value })} className="flex-1" />
+      </div>
+      {item.kind === "audio" && (
+        <Input placeholder="Audio URL" value={item.audioUrl ?? ""} onChange={(e) => onPatch({ audioUrl: e.target.value })} />
+      )}
+      <Input placeholder="Definition (optional)" value={item.definition ?? ""} onChange={(e) => onPatch({ definition: e.target.value })} />
+    </div>
+  );
+}
+
+function MCQEditor({ a, onChange }: { a: Extract<Activity, { type: "multipleChoice" }>; onChange: (p: Partial<Activity>) => void }) {
+  const setOpt = (id: string, patch: Partial<typeof a.options[number]>) =>
+    onChange({ options: a.options.map((o) => (o.id === id ? { ...o, ...patch } : o)) });
+  const setCorrect = (id: string) =>
+    onChange({ options: a.options.map((o) => ({ ...o, isCorrect: o.id === id })) });
+
+  return (
+    <div className="space-y-3">
+      <div>
+        <label className="text-xs text-muted-foreground">Question</label>
+        <Input value={a.question} onChange={(e) => onChange({ question: e.target.value })} />
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div>
+          <label className="text-xs text-muted-foreground">Subject type</label>
+          <Select value={a.subject?.kind ?? "text"} onValueChange={(v) => onChange({ subject: { ...(a.subject ?? { kind: "text", value: "" }), kind: v as "text" | "audio" } })}>
+            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="text">Text</SelectItem>
+              <SelectItem value="audio">Audio</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div>
+          <label className="text-xs text-muted-foreground">Subject value {a.subject?.kind === "audio" ? "(audio URL)" : ""}</label>
+          <Input value={a.subject?.value ?? ""} onChange={(e) => onChange({ subject: { ...(a.subject ?? { kind: "text", value: "" }), value: e.target.value } })} />
+        </div>
+        <div>
+          <label className="text-xs text-muted-foreground">Subject definition</label>
+          <Input value={a.subject?.definition ?? ""} onChange={(e) => onChange({ subject: { ...(a.subject ?? { kind: "text", value: "" }), definition: e.target.value } })} />
+        </div>
+        <div>
+          <label className="text-xs text-muted-foreground">Image URL (optional)</label>
+          <Input value={a.image ?? ""} onChange={(e) => onChange({ image: e.target.value })} />
+        </div>
+        <div>
+          <label className="text-xs text-muted-foreground">Subject pronunciation audio (optional)</label>
+          <Input value={a.subjectAudioUrl ?? ""} onChange={(e) => onChange({ subjectAudioUrl: e.target.value })} />
+        </div>
+        <div>
+          <label className="text-xs text-muted-foreground">XP reward</label>
+          <Input type="number" value={a.xpReward} onChange={(e) => onChange({ xpReward: parseInt(e.target.value) || 0 })} />
+        </div>
+      </div>
+
+      <div>
+        <label className="text-xs text-muted-foreground">Admin-only definition / notes</label>
+        <Textarea value={a.definition ?? ""} onChange={(e) => onChange({ definition: e.target.value })} />
+      </div>
+
+      <div>
+        <label className="text-xs text-muted-foreground">Options (exactly one correct)</label>
+        <div className="space-y-2 mt-1">
+          {a.options.map((o) => (
+            <div key={o.id} className="flex gap-2 items-center">
+              <input type="radio" checked={o.isCorrect} onChange={() => setCorrect(o.id)} className="accent-primary" />
+              <Input value={o.text} onChange={(e) => setOpt(o.id, { text: e.target.value })} className="flex-1" placeholder="Option text" />
+              <Button size="sm" variant="ghost" onClick={() => onChange({ options: a.options.filter((x) => x.id !== o.id) })}>
+                <Trash2 className="w-4 h-4 text-red-400" />
+              </Button>
             </div>
+          ))}
+          <Button size="sm" variant="secondary" onClick={() => onChange({ options: [...a.options, { id: newId(), text: "", isCorrect: false }] })}>
+            <Plus className="w-4 h-4 mr-1" /> Add option
+          </Button>
         </div>
-        );
-    }
-
-    return (
-        <div className="bg-card border border-border rounded-lg p-4 flex items-center gap-4">
-        <div className="w-10 h-10 rounded-full bg-primary/20 text-primary font-bold flex items-center justify-center">
-            {lesson.lesson_number}
-        </div>
-        <div className="flex-1 min-w-0">
-            <div className="font-bold truncate">{lesson.title}</div>
-            <div className="text-sm text-muted-foreground truncate">{lesson.description}</div>
-            <div className="text-xs text-muted-foreground mt-1">{lesson.activities.length} activities · {lesson.xp_reward} XP</div>
-        </div>
-        <div className="flex gap-2">
-            <Link to="/admin/$langCode/foundation/lesson/$lessonId" params={{ langCode, lessonId: lesson.id }}>
-            <Button size="sm" variant="secondary"><Wrench className="w-4 h-4 mr-1" /> Activities</Button>
-            </Link>
-            <Button size="sm" variant="ghost" onClick={onEditToggle}><Pencil className="w-4 h-4" /></Button>
-            <Button size="sm" variant="ghost" onClick={onDelete}><Trash2 className="w-4 h-4 text-red-400" /></Button>
-        </div>
-        </div>
-    );
-    }
+      </div>
+    </div>
+  );
+}
