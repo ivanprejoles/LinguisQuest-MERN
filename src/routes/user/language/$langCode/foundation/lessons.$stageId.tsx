@@ -5,13 +5,14 @@ import Navigation from "@/components/lq/Navigation";
 import LessonCard from "@/components/lq/LessonCard";
 import { fetchLessonsForStage, fetchStage, fetchCompletedLessonIds } from "@/lib/linguisquest";
 
-export const Route = createFileRoute("/user/foundation/lessons/$stageId")({
+export const Route = createFileRoute("/user/language/$langCode/foundation/lessons/$stageId")({
   head: () => ({ meta: [{ title: "Lessons — LinguisQuest" }] }),
   component: LessonsForStage,
 });
 
 function LessonsForStage() {
   const { stageId } = Route.useParams();
+  const { langCode } = Route.useParams();
   const n = parseInt(stageId, 10);
   const stage = useQuery({ queryKey: ["stage", n], queryFn: () => fetchStage(n) });
   const lessons = useQuery({ queryKey: ["lessons", n], queryFn: () => fetchLessonsForStage(n) });
@@ -37,7 +38,7 @@ function LessonsForStage() {
         ) : lessons.data && lessons.data.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {lessons.data.map((l) => (
-              <Link key={l.id} to="/user/foundation/lesson/$lessonId" params={{ lessonId: l.id }}>
+              <Link key={l.id} to="/user/language/$langCode/foundation/lesson/$lessonId" params={{ langCode, lessonId: l.id }}>
                 <LessonCard lesson={l} done={doneSet.has(l.id)} />
               </Link>
             ))}

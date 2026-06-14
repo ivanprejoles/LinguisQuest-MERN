@@ -10,27 +10,39 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as UserScenariosIndexRouteImport } from './routes/user/scenarios/index'
+import { Route as UserIndexRouteImport } from './routes/user/index'
+import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as UserLeaderboardIndexRouteImport } from './routes/user/leaderboard/index'
-import { Route as UserFoundationIndexRouteImport } from './routes/user/foundation/index'
+import { Route as UserLanguageIndexRouteImport } from './routes/user/language/index'
 import { Route as UserDashboardIndexRouteImport } from './routes/user/dashboard/index'
-import { Route as UserAiConversionIndexRouteImport } from './routes/user/ai-conversion/index'
 import { Route as UserAchievementsIndexRouteImport } from './routes/user/achievements/index'
-import { Route as AdminScenariosIndexRouteImport } from './routes/admin/scenarios/index'
-import { Route as AdminFoundationIndexRouteImport } from './routes/admin/foundation/index'
+import { Route as AdminLanguageIndexRouteImport } from './routes/admin/language/index'
 import { Route as AdminDashboardIndexRouteImport } from './routes/admin/dashboard/index'
-import { Route as AdminAiConversionIndexRouteImport } from './routes/admin/ai-conversion/index'
-import { Route as UserFoundationLessonsStageIdRouteImport } from './routes/user/foundation/lessons.$stageId'
-import { Route as UserFoundationLessonLessonIdRouteImport } from './routes/user/foundation/lesson.$lessonId'
+import { Route as UserLanguageLangCodeIndexRouteImport } from './routes/user/language/$langCode/index'
+import { Route as AdminLanguageLangCodeIndexRouteImport } from './routes/admin/language/$langCode/index'
+import { Route as UserLanguageLangCodeScenariosIndexRouteImport } from './routes/user/language/$langCode/scenarios/index'
+import { Route as UserLanguageLangCodeFoundationIndexRouteImport } from './routes/user/language/$langCode/foundation/index'
+import { Route as UserLanguageLangCodeAiConversionIndexRouteImport } from './routes/user/language/$langCode/ai-conversion/index'
+import { Route as AdminLanguageLangCodeScenariosIndexRouteImport } from './routes/admin/language/$langCode/scenarios/index'
+import { Route as AdminLanguageLangCodeFoundationIndexRouteImport } from './routes/admin/language/$langCode/foundation/index'
+import { Route as AdminLanguageLangCodeAiConversionIndexRouteImport } from './routes/admin/language/$langCode/ai-conversion/index'
+import { Route as UserLanguageLangCodeFoundationLessonsStageIdRouteImport } from './routes/user/language/$langCode/foundation/lessons.$stageId'
+import { Route as UserLanguageLangCodeFoundationLessonLessonIdRouteImport } from './routes/user/language/$langCode/foundation/lesson.$lessonId'
+import { Route as AdminLanguageLangCodeFoundationLessonLessonIdRouteImport } from './routes/admin/language/$langCode/foundation/lesson.$lessonId/index.tsx'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const UserScenariosIndexRoute = UserScenariosIndexRouteImport.update({
-  id: '/user/scenarios/',
-  path: '/user/scenarios/',
+const UserIndexRoute = UserIndexRouteImport.update({
+  id: '/user/',
+  path: '/user/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/admin/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const UserLeaderboardIndexRoute = UserLeaderboardIndexRouteImport.update({
@@ -38,9 +50,9 @@ const UserLeaderboardIndexRoute = UserLeaderboardIndexRouteImport.update({
   path: '/user/leaderboard/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const UserFoundationIndexRoute = UserFoundationIndexRouteImport.update({
-  id: '/user/foundation/',
-  path: '/user/foundation/',
+const UserLanguageIndexRoute = UserLanguageIndexRouteImport.update({
+  id: '/user/language/',
+  path: '/user/language/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const UserDashboardIndexRoute = UserDashboardIndexRouteImport.update({
@@ -48,24 +60,14 @@ const UserDashboardIndexRoute = UserDashboardIndexRouteImport.update({
   path: '/user/dashboard/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const UserAiConversionIndexRoute = UserAiConversionIndexRouteImport.update({
-  id: '/user/ai-conversion/',
-  path: '/user/ai-conversion/',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const UserAchievementsIndexRoute = UserAchievementsIndexRouteImport.update({
   id: '/user/achievements/',
   path: '/user/achievements/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminScenariosIndexRoute = AdminScenariosIndexRouteImport.update({
-  id: '/admin/scenarios/',
-  path: '/admin/scenarios/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminFoundationIndexRoute = AdminFoundationIndexRouteImport.update({
-  id: '/admin/foundation/',
-  path: '/admin/foundation/',
+const AdminLanguageIndexRoute = AdminLanguageIndexRouteImport.update({
+  id: '/admin/language/',
+  path: '/admin/language/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminDashboardIndexRoute = AdminDashboardIndexRouteImport.update({
@@ -73,132 +75,230 @@ const AdminDashboardIndexRoute = AdminDashboardIndexRouteImport.update({
   path: '/admin/dashboard/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminAiConversionIndexRoute = AdminAiConversionIndexRouteImport.update({
-  id: '/admin/ai-conversion/',
-  path: '/admin/ai-conversion/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const UserFoundationLessonsStageIdRoute =
-  UserFoundationLessonsStageIdRouteImport.update({
-    id: '/user/foundation/lessons/$stageId',
-    path: '/user/foundation/lessons/$stageId',
+const UserLanguageLangCodeIndexRoute =
+  UserLanguageLangCodeIndexRouteImport.update({
+    id: '/user/language/$langCode/',
+    path: '/user/language/$langCode/',
     getParentRoute: () => rootRouteImport,
   } as any)
-const UserFoundationLessonLessonIdRoute =
-  UserFoundationLessonLessonIdRouteImport.update({
-    id: '/user/foundation/lesson/$lessonId',
-    path: '/user/foundation/lesson/$lessonId',
+const AdminLanguageLangCodeIndexRoute =
+  AdminLanguageLangCodeIndexRouteImport.update({
+    id: '/admin/language/$langCode/',
+    path: '/admin/language/$langCode/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const UserLanguageLangCodeScenariosIndexRoute =
+  UserLanguageLangCodeScenariosIndexRouteImport.update({
+    id: '/user/language/$langCode/scenarios/',
+    path: '/user/language/$langCode/scenarios/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const UserLanguageLangCodeFoundationIndexRoute =
+  UserLanguageLangCodeFoundationIndexRouteImport.update({
+    id: '/user/language/$langCode/foundation/',
+    path: '/user/language/$langCode/foundation/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const UserLanguageLangCodeAiConversionIndexRoute =
+  UserLanguageLangCodeAiConversionIndexRouteImport.update({
+    id: '/user/language/$langCode/ai-conversion/',
+    path: '/user/language/$langCode/ai-conversion/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const AdminLanguageLangCodeScenariosIndexRoute =
+  AdminLanguageLangCodeScenariosIndexRouteImport.update({
+    id: '/admin/language/$langCode/scenarios/',
+    path: '/admin/language/$langCode/scenarios/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const AdminLanguageLangCodeFoundationIndexRoute =
+  AdminLanguageLangCodeFoundationIndexRouteImport.update({
+    id: '/admin/language/$langCode/foundation/',
+    path: '/admin/language/$langCode/foundation/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const AdminLanguageLangCodeAiConversionIndexRoute =
+  AdminLanguageLangCodeAiConversionIndexRouteImport.update({
+    id: '/admin/language/$langCode/ai-conversion/',
+    path: '/admin/language/$langCode/ai-conversion/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const UserLanguageLangCodeFoundationLessonsStageIdRoute =
+  UserLanguageLangCodeFoundationLessonsStageIdRouteImport.update({
+    id: '/user/language/$langCode/foundation/lessons/$stageId',
+    path: '/user/language/$langCode/foundation/lessons/$stageId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const UserLanguageLangCodeFoundationLessonLessonIdRoute =
+  UserLanguageLangCodeFoundationLessonLessonIdRouteImport.update({
+    id: '/user/language/$langCode/foundation/lesson/$lessonId',
+    path: '/user/language/$langCode/foundation/lesson/$lessonId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const AdminLanguageLangCodeFoundationLessonLessonIdRoute =
+  AdminLanguageLangCodeFoundationLessonLessonIdRouteImport.update({
+    id: '/admin/language/$langCode/foundation/lesson/$lessonId',
+    path: '/admin/language/$langCode/foundation/lesson/$lessonId',
     getParentRoute: () => rootRouteImport,
   } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/admin/ai-conversion/': typeof AdminAiConversionIndexRoute
+  '/admin/': typeof AdminIndexRoute
+  '/user/': typeof UserIndexRoute
   '/admin/dashboard/': typeof AdminDashboardIndexRoute
-  '/admin/foundation/': typeof AdminFoundationIndexRoute
-  '/admin/scenarios/': typeof AdminScenariosIndexRoute
+  '/admin/language/': typeof AdminLanguageIndexRoute
   '/user/achievements/': typeof UserAchievementsIndexRoute
-  '/user/ai-conversion/': typeof UserAiConversionIndexRoute
   '/user/dashboard/': typeof UserDashboardIndexRoute
-  '/user/foundation/': typeof UserFoundationIndexRoute
+  '/user/language/': typeof UserLanguageIndexRoute
   '/user/leaderboard/': typeof UserLeaderboardIndexRoute
-  '/user/scenarios/': typeof UserScenariosIndexRoute
-  '/user/foundation/lesson/$lessonId': typeof UserFoundationLessonLessonIdRoute
-  '/user/foundation/lessons/$stageId': typeof UserFoundationLessonsStageIdRoute
+  '/admin/language/$langCode/': typeof AdminLanguageLangCodeIndexRoute
+  '/user/language/$langCode/': typeof UserLanguageLangCodeIndexRoute
+  '/admin/language/$langCode/ai-conversion/': typeof AdminLanguageLangCodeAiConversionIndexRoute
+  '/admin/language/$langCode/foundation/': typeof AdminLanguageLangCodeFoundationIndexRoute
+  '/admin/language/$langCode/scenarios/': typeof AdminLanguageLangCodeScenariosIndexRoute
+  '/user/language/$langCode/ai-conversion/': typeof UserLanguageLangCodeAiConversionIndexRoute
+  '/user/language/$langCode/foundation/': typeof UserLanguageLangCodeFoundationIndexRoute
+  '/user/language/$langCode/scenarios/': typeof UserLanguageLangCodeScenariosIndexRoute
+  '/admin/language/$langCode/foundation/lesson/$lessonId': typeof AdminLanguageLangCodeFoundationLessonLessonIdRoute
+  '/user/language/$langCode/foundation/lesson/$lessonId': typeof UserLanguageLangCodeFoundationLessonLessonIdRoute
+  '/user/language/$langCode/foundation/lessons/$stageId': typeof UserLanguageLangCodeFoundationLessonsStageIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/admin/ai-conversion': typeof AdminAiConversionIndexRoute
+  '/admin': typeof AdminIndexRoute
+  '/user': typeof UserIndexRoute
   '/admin/dashboard': typeof AdminDashboardIndexRoute
-  '/admin/foundation': typeof AdminFoundationIndexRoute
-  '/admin/scenarios': typeof AdminScenariosIndexRoute
+  '/admin/language': typeof AdminLanguageIndexRoute
   '/user/achievements': typeof UserAchievementsIndexRoute
-  '/user/ai-conversion': typeof UserAiConversionIndexRoute
   '/user/dashboard': typeof UserDashboardIndexRoute
-  '/user/foundation': typeof UserFoundationIndexRoute
+  '/user/language': typeof UserLanguageIndexRoute
   '/user/leaderboard': typeof UserLeaderboardIndexRoute
-  '/user/scenarios': typeof UserScenariosIndexRoute
-  '/user/foundation/lesson/$lessonId': typeof UserFoundationLessonLessonIdRoute
-  '/user/foundation/lessons/$stageId': typeof UserFoundationLessonsStageIdRoute
+  '/admin/language/$langCode': typeof AdminLanguageLangCodeIndexRoute
+  '/user/language/$langCode': typeof UserLanguageLangCodeIndexRoute
+  '/admin/language/$langCode/ai-conversion': typeof AdminLanguageLangCodeAiConversionIndexRoute
+  '/admin/language/$langCode/foundation': typeof AdminLanguageLangCodeFoundationIndexRoute
+  '/admin/language/$langCode/scenarios': typeof AdminLanguageLangCodeScenariosIndexRoute
+  '/user/language/$langCode/ai-conversion': typeof UserLanguageLangCodeAiConversionIndexRoute
+  '/user/language/$langCode/foundation': typeof UserLanguageLangCodeFoundationIndexRoute
+  '/user/language/$langCode/scenarios': typeof UserLanguageLangCodeScenariosIndexRoute
+  '/admin/language/$langCode/foundation/lesson/$lessonId': typeof AdminLanguageLangCodeFoundationLessonLessonIdRoute
+  '/user/language/$langCode/foundation/lesson/$lessonId': typeof UserLanguageLangCodeFoundationLessonLessonIdRoute
+  '/user/language/$langCode/foundation/lessons/$stageId': typeof UserLanguageLangCodeFoundationLessonsStageIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/admin/ai-conversion/': typeof AdminAiConversionIndexRoute
+  '/admin/': typeof AdminIndexRoute
+  '/user/': typeof UserIndexRoute
   '/admin/dashboard/': typeof AdminDashboardIndexRoute
-  '/admin/foundation/': typeof AdminFoundationIndexRoute
-  '/admin/scenarios/': typeof AdminScenariosIndexRoute
+  '/admin/language/': typeof AdminLanguageIndexRoute
   '/user/achievements/': typeof UserAchievementsIndexRoute
-  '/user/ai-conversion/': typeof UserAiConversionIndexRoute
   '/user/dashboard/': typeof UserDashboardIndexRoute
-  '/user/foundation/': typeof UserFoundationIndexRoute
+  '/user/language/': typeof UserLanguageIndexRoute
   '/user/leaderboard/': typeof UserLeaderboardIndexRoute
-  '/user/scenarios/': typeof UserScenariosIndexRoute
-  '/user/foundation/lesson/$lessonId': typeof UserFoundationLessonLessonIdRoute
-  '/user/foundation/lessons/$stageId': typeof UserFoundationLessonsStageIdRoute
+  '/admin/language/$langCode/': typeof AdminLanguageLangCodeIndexRoute
+  '/user/language/$langCode/': typeof UserLanguageLangCodeIndexRoute
+  '/admin/language/$langCode/ai-conversion/': typeof AdminLanguageLangCodeAiConversionIndexRoute
+  '/admin/language/$langCode/foundation/': typeof AdminLanguageLangCodeFoundationIndexRoute
+  '/admin/language/$langCode/scenarios/': typeof AdminLanguageLangCodeScenariosIndexRoute
+  '/user/language/$langCode/ai-conversion/': typeof UserLanguageLangCodeAiConversionIndexRoute
+  '/user/language/$langCode/foundation/': typeof UserLanguageLangCodeFoundationIndexRoute
+  '/user/language/$langCode/scenarios/': typeof UserLanguageLangCodeScenariosIndexRoute
+  '/admin/language/$langCode/foundation/lesson/$lessonId': typeof AdminLanguageLangCodeFoundationLessonLessonIdRoute
+  '/user/language/$langCode/foundation/lesson/$lessonId': typeof UserLanguageLangCodeFoundationLessonLessonIdRoute
+  '/user/language/$langCode/foundation/lessons/$stageId': typeof UserLanguageLangCodeFoundationLessonsStageIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/admin/ai-conversion/'
+    | '/admin/'
+    | '/user/'
     | '/admin/dashboard/'
-    | '/admin/foundation/'
-    | '/admin/scenarios/'
+    | '/admin/language/'
     | '/user/achievements/'
-    | '/user/ai-conversion/'
     | '/user/dashboard/'
-    | '/user/foundation/'
+    | '/user/language/'
     | '/user/leaderboard/'
-    | '/user/scenarios/'
-    | '/user/foundation/lesson/$lessonId'
-    | '/user/foundation/lessons/$stageId'
+    | '/admin/language/$langCode/'
+    | '/user/language/$langCode/'
+    | '/admin/language/$langCode/ai-conversion/'
+    | '/admin/language/$langCode/foundation/'
+    | '/admin/language/$langCode/scenarios/'
+    | '/user/language/$langCode/ai-conversion/'
+    | '/user/language/$langCode/foundation/'
+    | '/user/language/$langCode/scenarios/'
+    | '/admin/language/$langCode/foundation/lesson/$lessonId'
+    | '/user/language/$langCode/foundation/lesson/$lessonId'
+    | '/user/language/$langCode/foundation/lessons/$stageId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/admin/ai-conversion'
+    | '/admin'
+    | '/user'
     | '/admin/dashboard'
-    | '/admin/foundation'
-    | '/admin/scenarios'
+    | '/admin/language'
     | '/user/achievements'
-    | '/user/ai-conversion'
     | '/user/dashboard'
-    | '/user/foundation'
+    | '/user/language'
     | '/user/leaderboard'
-    | '/user/scenarios'
-    | '/user/foundation/lesson/$lessonId'
-    | '/user/foundation/lessons/$stageId'
+    | '/admin/language/$langCode'
+    | '/user/language/$langCode'
+    | '/admin/language/$langCode/ai-conversion'
+    | '/admin/language/$langCode/foundation'
+    | '/admin/language/$langCode/scenarios'
+    | '/user/language/$langCode/ai-conversion'
+    | '/user/language/$langCode/foundation'
+    | '/user/language/$langCode/scenarios'
+    | '/admin/language/$langCode/foundation/lesson/$lessonId'
+    | '/user/language/$langCode/foundation/lesson/$lessonId'
+    | '/user/language/$langCode/foundation/lessons/$stageId'
   id:
     | '__root__'
     | '/'
-    | '/admin/ai-conversion/'
+    | '/admin/'
+    | '/user/'
     | '/admin/dashboard/'
-    | '/admin/foundation/'
-    | '/admin/scenarios/'
+    | '/admin/language/'
     | '/user/achievements/'
-    | '/user/ai-conversion/'
     | '/user/dashboard/'
-    | '/user/foundation/'
+    | '/user/language/'
     | '/user/leaderboard/'
-    | '/user/scenarios/'
-    | '/user/foundation/lesson/$lessonId'
-    | '/user/foundation/lessons/$stageId'
+    | '/admin/language/$langCode/'
+    | '/user/language/$langCode/'
+    | '/admin/language/$langCode/ai-conversion/'
+    | '/admin/language/$langCode/foundation/'
+    | '/admin/language/$langCode/scenarios/'
+    | '/user/language/$langCode/ai-conversion/'
+    | '/user/language/$langCode/foundation/'
+    | '/user/language/$langCode/scenarios/'
+    | '/admin/language/$langCode/foundation/lesson/$lessonId'
+    | '/user/language/$langCode/foundation/lesson/$lessonId'
+    | '/user/language/$langCode/foundation/lessons/$stageId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AdminAiConversionIndexRoute: typeof AdminAiConversionIndexRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+  UserIndexRoute: typeof UserIndexRoute
   AdminDashboardIndexRoute: typeof AdminDashboardIndexRoute
-  AdminFoundationIndexRoute: typeof AdminFoundationIndexRoute
-  AdminScenariosIndexRoute: typeof AdminScenariosIndexRoute
+  AdminLanguageIndexRoute: typeof AdminLanguageIndexRoute
   UserAchievementsIndexRoute: typeof UserAchievementsIndexRoute
-  UserAiConversionIndexRoute: typeof UserAiConversionIndexRoute
   UserDashboardIndexRoute: typeof UserDashboardIndexRoute
-  UserFoundationIndexRoute: typeof UserFoundationIndexRoute
+  UserLanguageIndexRoute: typeof UserLanguageIndexRoute
   UserLeaderboardIndexRoute: typeof UserLeaderboardIndexRoute
-  UserScenariosIndexRoute: typeof UserScenariosIndexRoute
-  UserFoundationLessonLessonIdRoute: typeof UserFoundationLessonLessonIdRoute
-  UserFoundationLessonsStageIdRoute: typeof UserFoundationLessonsStageIdRoute
+  AdminLanguageLangCodeIndexRoute: typeof AdminLanguageLangCodeIndexRoute
+  UserLanguageLangCodeIndexRoute: typeof UserLanguageLangCodeIndexRoute
+  AdminLanguageLangCodeAiConversionIndexRoute: typeof AdminLanguageLangCodeAiConversionIndexRoute
+  AdminLanguageLangCodeFoundationIndexRoute: typeof AdminLanguageLangCodeFoundationIndexRoute
+  AdminLanguageLangCodeScenariosIndexRoute: typeof AdminLanguageLangCodeScenariosIndexRoute
+  UserLanguageLangCodeAiConversionIndexRoute: typeof UserLanguageLangCodeAiConversionIndexRoute
+  UserLanguageLangCodeFoundationIndexRoute: typeof UserLanguageLangCodeFoundationIndexRoute
+  UserLanguageLangCodeScenariosIndexRoute: typeof UserLanguageLangCodeScenariosIndexRoute
+  AdminLanguageLangCodeFoundationLessonLessonIdRoute: typeof AdminLanguageLangCodeFoundationLessonLessonIdRoute
+  UserLanguageLangCodeFoundationLessonLessonIdRoute: typeof UserLanguageLangCodeFoundationLessonLessonIdRoute
+  UserLanguageLangCodeFoundationLessonsStageIdRoute: typeof UserLanguageLangCodeFoundationLessonsStageIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -210,11 +310,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/user/scenarios/': {
-      id: '/user/scenarios/'
-      path: '/user/scenarios'
-      fullPath: '/user/scenarios/'
-      preLoaderRoute: typeof UserScenariosIndexRouteImport
+    '/user/': {
+      id: '/user/'
+      path: '/user'
+      fullPath: '/user/'
+      preLoaderRoute: typeof UserIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/admin'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/user/leaderboard/': {
@@ -224,11 +331,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UserLeaderboardIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/user/foundation/': {
-      id: '/user/foundation/'
-      path: '/user/foundation'
-      fullPath: '/user/foundation/'
-      preLoaderRoute: typeof UserFoundationIndexRouteImport
+    '/user/language/': {
+      id: '/user/language/'
+      path: '/user/language'
+      fullPath: '/user/language/'
+      preLoaderRoute: typeof UserLanguageIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/user/dashboard/': {
@@ -238,13 +345,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UserDashboardIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/user/ai-conversion/': {
-      id: '/user/ai-conversion/'
-      path: '/user/ai-conversion'
-      fullPath: '/user/ai-conversion/'
-      preLoaderRoute: typeof UserAiConversionIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/user/achievements/': {
       id: '/user/achievements/'
       path: '/user/achievements'
@@ -252,18 +352,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UserAchievementsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/scenarios/': {
-      id: '/admin/scenarios/'
-      path: '/admin/scenarios'
-      fullPath: '/admin/scenarios/'
-      preLoaderRoute: typeof AdminScenariosIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin/foundation/': {
-      id: '/admin/foundation/'
-      path: '/admin/foundation'
-      fullPath: '/admin/foundation/'
-      preLoaderRoute: typeof AdminFoundationIndexRouteImport
+    '/admin/language/': {
+      id: '/admin/language/'
+      path: '/admin/language'
+      fullPath: '/admin/language/'
+      preLoaderRoute: typeof AdminLanguageIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/dashboard/': {
@@ -273,25 +366,81 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminDashboardIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/ai-conversion/': {
-      id: '/admin/ai-conversion/'
-      path: '/admin/ai-conversion'
-      fullPath: '/admin/ai-conversion/'
-      preLoaderRoute: typeof AdminAiConversionIndexRouteImport
+    '/user/language/$langCode/': {
+      id: '/user/language/$langCode/'
+      path: '/user/language/$langCode'
+      fullPath: '/user/language/$langCode/'
+      preLoaderRoute: typeof UserLanguageLangCodeIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/user/foundation/lessons/$stageId': {
-      id: '/user/foundation/lessons/$stageId'
-      path: '/user/foundation/lessons/$stageId'
-      fullPath: '/user/foundation/lessons/$stageId'
-      preLoaderRoute: typeof UserFoundationLessonsStageIdRouteImport
+    '/admin/language/$langCode/': {
+      id: '/admin/language/$langCode/'
+      path: '/admin/language/$langCode'
+      fullPath: '/admin/language/$langCode/'
+      preLoaderRoute: typeof AdminLanguageLangCodeIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/user/foundation/lesson/$lessonId': {
-      id: '/user/foundation/lesson/$lessonId'
-      path: '/user/foundation/lesson/$lessonId'
-      fullPath: '/user/foundation/lesson/$lessonId'
-      preLoaderRoute: typeof UserFoundationLessonLessonIdRouteImport
+    '/user/language/$langCode/scenarios/': {
+      id: '/user/language/$langCode/scenarios/'
+      path: '/user/language/$langCode/scenarios'
+      fullPath: '/user/language/$langCode/scenarios/'
+      preLoaderRoute: typeof UserLanguageLangCodeScenariosIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/user/language/$langCode/foundation/': {
+      id: '/user/language/$langCode/foundation/'
+      path: '/user/language/$langCode/foundation'
+      fullPath: '/user/language/$langCode/foundation/'
+      preLoaderRoute: typeof UserLanguageLangCodeFoundationIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/user/language/$langCode/ai-conversion/': {
+      id: '/user/language/$langCode/ai-conversion/'
+      path: '/user/language/$langCode/ai-conversion'
+      fullPath: '/user/language/$langCode/ai-conversion/'
+      preLoaderRoute: typeof UserLanguageLangCodeAiConversionIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/language/$langCode/scenarios/': {
+      id: '/admin/language/$langCode/scenarios/'
+      path: '/admin/language/$langCode/scenarios'
+      fullPath: '/admin/language/$langCode/scenarios/'
+      preLoaderRoute: typeof AdminLanguageLangCodeScenariosIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/language/$langCode/foundation/': {
+      id: '/admin/language/$langCode/foundation/'
+      path: '/admin/language/$langCode/foundation'
+      fullPath: '/admin/language/$langCode/foundation/'
+      preLoaderRoute: typeof AdminLanguageLangCodeFoundationIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/language/$langCode/ai-conversion/': {
+      id: '/admin/language/$langCode/ai-conversion/'
+      path: '/admin/language/$langCode/ai-conversion'
+      fullPath: '/admin/language/$langCode/ai-conversion/'
+      preLoaderRoute: typeof AdminLanguageLangCodeAiConversionIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/user/language/$langCode/foundation/lessons/$stageId': {
+      id: '/user/language/$langCode/foundation/lessons/$stageId'
+      path: '/user/language/$langCode/foundation/lessons/$stageId'
+      fullPath: '/user/language/$langCode/foundation/lessons/$stageId'
+      preLoaderRoute: typeof UserLanguageLangCodeFoundationLessonsStageIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/user/language/$langCode/foundation/lesson/$lessonId': {
+      id: '/user/language/$langCode/foundation/lesson/$lessonId'
+      path: '/user/language/$langCode/foundation/lesson/$lessonId'
+      fullPath: '/user/language/$langCode/foundation/lesson/$lessonId'
+      preLoaderRoute: typeof UserLanguageLangCodeFoundationLessonLessonIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/language/$langCode/foundation/lesson/$lessonId': {
+      id: '/admin/language/$langCode/foundation/lesson/$lessonId'
+      path: '/admin/language/$langCode/foundation/lesson/$lessonId'
+      fullPath: '/admin/language/$langCode/foundation/lesson/$lessonId'
+      preLoaderRoute: typeof AdminLanguageLangCodeFoundationLessonLessonIdRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -299,18 +448,34 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AdminAiConversionIndexRoute: AdminAiConversionIndexRoute,
+  AdminIndexRoute: AdminIndexRoute,
+  UserIndexRoute: UserIndexRoute,
   AdminDashboardIndexRoute: AdminDashboardIndexRoute,
-  AdminFoundationIndexRoute: AdminFoundationIndexRoute,
-  AdminScenariosIndexRoute: AdminScenariosIndexRoute,
+  AdminLanguageIndexRoute: AdminLanguageIndexRoute,
   UserAchievementsIndexRoute: UserAchievementsIndexRoute,
-  UserAiConversionIndexRoute: UserAiConversionIndexRoute,
   UserDashboardIndexRoute: UserDashboardIndexRoute,
-  UserFoundationIndexRoute: UserFoundationIndexRoute,
+  UserLanguageIndexRoute: UserLanguageIndexRoute,
   UserLeaderboardIndexRoute: UserLeaderboardIndexRoute,
-  UserScenariosIndexRoute: UserScenariosIndexRoute,
-  UserFoundationLessonLessonIdRoute: UserFoundationLessonLessonIdRoute,
-  UserFoundationLessonsStageIdRoute: UserFoundationLessonsStageIdRoute,
+  AdminLanguageLangCodeIndexRoute: AdminLanguageLangCodeIndexRoute,
+  UserLanguageLangCodeIndexRoute: UserLanguageLangCodeIndexRoute,
+  AdminLanguageLangCodeAiConversionIndexRoute:
+    AdminLanguageLangCodeAiConversionIndexRoute,
+  AdminLanguageLangCodeFoundationIndexRoute:
+    AdminLanguageLangCodeFoundationIndexRoute,
+  AdminLanguageLangCodeScenariosIndexRoute:
+    AdminLanguageLangCodeScenariosIndexRoute,
+  UserLanguageLangCodeAiConversionIndexRoute:
+    UserLanguageLangCodeAiConversionIndexRoute,
+  UserLanguageLangCodeFoundationIndexRoute:
+    UserLanguageLangCodeFoundationIndexRoute,
+  UserLanguageLangCodeScenariosIndexRoute:
+    UserLanguageLangCodeScenariosIndexRoute,
+  AdminLanguageLangCodeFoundationLessonLessonIdRoute:
+    AdminLanguageLangCodeFoundationLessonLessonIdRoute,
+  UserLanguageLangCodeFoundationLessonLessonIdRoute:
+    UserLanguageLangCodeFoundationLessonLessonIdRoute,
+  UserLanguageLangCodeFoundationLessonsStageIdRoute:
+    UserLanguageLangCodeFoundationLessonsStageIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

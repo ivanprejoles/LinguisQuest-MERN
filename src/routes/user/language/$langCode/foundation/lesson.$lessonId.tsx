@@ -9,7 +9,7 @@ import MatchingActivity from "@/components/lq/activities/MatchingActivity";
 import MultipleChoiceActivity from "@/components/lq/activities/MultipleChoiceActivity";
 import { fetchLesson, recordLessonCompletion } from "@/lib/linguisquest";
 
-export const Route = createFileRoute("/user/foundation/lesson/$lessonId")({
+export const Route = createFileRoute("/user/language/$langCode/foundation/lesson/$lessonId")({
   head: () => ({ meta: [{ title: "Lesson — LinguisQuest" }] }),
   component: LessonPage,
 });

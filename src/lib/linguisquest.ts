@@ -2,6 +2,12 @@ import { supabase } from "@/integrations/supabase/client";
 
 export const GUEST_ID = "guest";
 
+/**
+ * =========================
+ * CORE CONTENT STRUCTURE
+ * =========================
+ */
+
 export type Vocab = {
   word: string;
   translation: string;
@@ -24,29 +30,53 @@ export type Activity =
       xpReward: number;
     };
 
+/**
+ * =========================
+ * HIERARCHY (FIXED)
+ * =========================
+ *
+ * Lesson (TOP LEVEL)
+ *   └── Stage (SMALLEST UNIT)
+ */
+
+export type Lesson = {
+  id: string;
+  lesson_number: number;
+  title: string;
+  description: string;
+  color: string;
+  icon: string;
+  stage_count: number;
+  display_order: number;
+};
+
 export type Stage = {
   id: string;
+
+  // parent reference (IMPORTANT FIX)
+  lesson_number: number;
+
   stage_number: number;
+
   title: string;
   description: string;
   icon: string;
   color: string;
-  lesson_count: number;
+
+  vocabulary: Vocab[];
+  activities: Activity[];
+
+  xp_reward: number;
+  estimated_duration: number;
+
   display_order: number;
 };
 
-export type Lesson = {
-  id: string;
-  stage_number: number;
-  lesson_number: number;
-  title: string;
-  description: string;
-  vocabulary: Vocab[];
-  activities: Activity[];
-  xp_reward: number;
-  estimated_duration: number;
-  display_order: number;
-};
+/**
+ * =========================
+ * PLAYER / GAMIFICATION
+ * =========================
+ */
 
 export type Player = {
   id: string;
@@ -66,33 +96,20 @@ export type Badge = {
   requirement_value: number;
 };
 
-export async function fetchStages(): Promise<Stage[]> {
-  const { data, error } = await supabase
-    .from("stages")
-    .select("*")
-    .order("display_order");
-  if (error) throw error;
-  return (data ?? []) as Stage[];
-}
+/**
+ * =========================
+ * FETCH: LESSONS (TOP LEVEL)
+ * =========================
+ */
 
-export async function fetchStage(stageNumber: number): Promise<Stage | null> {
-  const { data, error } = await supabase
-    .from("stages")
-    .select("*")
-    .eq("stage_number", stageNumber)
-    .maybeSingle();
-  if (error) throw error;
-  return (data ?? null) as Stage | null;
-}
-
-export async function fetchLessonsForStage(stageNumber: number): Promise<Lesson[]> {
+export async function fetchLessons(): Promise<Lesson[]> {
   const { data, error } = await supabase
     .from("lessons")
     .select("*")
-    .eq("stage_number", stageNumber)
     .order("display_order");
+
   if (error) throw error;
-  return (data ?? []) as unknown as Lesson[];
+  return (data ?? []) as Lesson[];
 }
 
 export async function fetchLesson(id: string): Promise<Lesson | null> {
@@ -101,9 +118,53 @@ export async function fetchLesson(id: string): Promise<Lesson | null> {
     .select("*")
     .eq("id", id)
     .maybeSingle();
+
   if (error) throw error;
-  return (data ?? null) as unknown as Lesson | null;
+  return (data ?? null) as Lesson | null;
 }
+
+/**
+ * =========================
+ * FETCH: STAGES (INSIDE LESSON)
+ * =========================
+ */
+
+export async function fetchStagesForLesson(
+  lessonNumber: number,
+): Promise<Stage[]> {
+  const { data, error } = await supabase
+    .from("stages")
+    .select("*")
+    .eq("lesson_number", lessonNumber)
+    .order("display_order");
+
+  if (error) throw error;
+
+  return (data ?? []).map((row) => ({
+    ...row,
+
+    // safe casts with fallback
+    vocabulary: (row.vocabulary ?? []) as Vocab[],
+    activities: (row.activities ?? []) as Activity[],
+  }));
+}
+
+export async function fetchStage(id: string): Promise<Stage | null> {
+  const { data, error } = await supabase
+    .from("stages")
+    .select("*")
+    .eq("id", id)
+    .maybeSingle();
+
+  if (error) throw error;
+  return (data ?? null) as Stage | null;
+}
+
+/**
+ * =========================
+ * PLAYER LOGIC (UNCHANGED)
+ * =========================
+ */
 
 export async function fetchPlayer(id = GUEST_ID): Promise<Player> {
   const { data, error } = await supabase
@@ -111,14 +172,17 @@ export async function fetchPlayer(id = GUEST_ID): Promise<Player> {
     .select("*")
     .eq("id", id)
     .maybeSingle();
+
   if (error) throw error;
+
   if (data) return data as Player;
-  // Create on the fly if missing
+
   const insert = await supabase
     .from("players")
     .insert({ id, username: id === GUEST_ID ? "Guest Learner" : id })
     .select("*")
     .single();
+
   if (insert.error) throw insert.error;
   return insert.data as Player;
 }
@@ -128,6 +192,7 @@ export async function fetchBadges(): Promise<Badge[]> {
     .from("badges")
     .select("*")
     .order("display_order");
+
   if (error) throw error;
   return (data ?? []) as Badge[];
 }
@@ -141,12 +206,14 @@ export async function fetchLeaderboard(
       : sortBy === "streak"
         ? "current_streak"
         : "total_xp";
+
   const { data, error } = await supabase
     .from("players")
     .select("*")
     .order(column, { ascending: false })
     .order("total_xp", { ascending: false })
     .limit(20);
+
   if (error) throw error;
   return (data ?? []) as Player[];
 }
@@ -158,10 +225,11 @@ export async function recordLessonCompletion(args: {
   score?: number;
 }) {
   const playerId = args.playerId ?? GUEST_ID;
+
   await supabase.from("player_progress").upsert(
     {
       player_id: playerId,
-      lesson_id: args.lessonId,
+      stage_id: args.lessonId,
       xp_earned: args.xpEarned,
       score: args.score ?? 100,
       completed_at: new Date().toISOString(),
@@ -178,13 +246,18 @@ export async function recordLessonCompletion(args: {
   if (p) {
     const newXp = (p.total_xp ?? 0) + args.xpEarned;
     const newLevel = Math.max(1, Math.floor(newXp / 200) + 1);
+
     await supabase
       .from("players")
       .update({
         total_xp: newXp,
         level: newLevel,
         current_streak: Math.max(1, p.current_streak ?? 0),
-        longest_streak: Math.max(p.longest_streak ?? 0, p.current_streak ?? 0, 1),
+        longest_streak: Math.max(
+          p.longest_streak ?? 0,
+          p.current_streak ?? 0,
+          1,
+        ),
         updated_at: new Date().toISOString(),
       })
       .eq("id", playerId);
@@ -202,13 +275,18 @@ export async function fetchCompletedLessonIds(
 ): Promise<string[]> {
   const { data, error } = await supabase
     .from("player_progress")
-    .select("lesson_id")
+    .select("stage_id")
     .eq("player_id", playerId);
+
   if (error) throw error;
-  return (data ?? []).map((r: { lesson_id: string }) => r.lesson_id);
+  return (data ?? []).map((r: { stage_id: string }) => r.stage_id);
 }
 
-export function computeEarnedBadges(player: Player, badges: Badge[], lessonsDone: number) {
+export function computeEarnedBadges(
+  player: Player,
+  badges: Badge[],
+  lessonsDone: number,
+) {
   return badges
     .filter((b) => {
       switch (b.requirement_type) {
