@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/admin/ai-conversion/')({
+export const Route = createFileRoute('/admin/language/$langCode/ai-conversion/')({
   component: RouteComponent,
 })
 

@@ -68,7 +68,40 @@ export type Database = {
         }
         Relationships: []
       }
-      lessons: {
+      languages: {
+        Row: {
+          active: boolean
+          code: string
+          created_at: string
+          display_order: number
+          flag: string
+          id: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          code: string
+          created_at?: string
+          display_order?: number
+          flag?: string
+          id?: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          code?: string
+          created_at?: string
+          display_order?: number
+          flag?: string
+          id?: string
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      stages: {
         Row: {
           activities: Json
           created_at: string
@@ -76,9 +109,12 @@ export type Database = {
           display_order: number
           estimated_duration: number
           id: string
+          language_id: string | null
           lesson_number: number
           stage_number: number
           title: string
+          icon: string
+          color: string
           vocabulary: Json
           xp_reward: number
         }
@@ -89,6 +125,7 @@ export type Database = {
           display_order: number
           estimated_duration?: number
           id?: string
+          language_id?: string | null
           lesson_number: number
           stage_number: number
           title: string
@@ -102,19 +139,28 @@ export type Database = {
           display_order?: number
           estimated_duration?: number
           id?: string
+          language_id?: string | null
           lesson_number?: number
           stage_number?: number
           title?: string
           vocabulary?: Json
           xp_reward?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "lessons_language_id_fkey"
+            columns: ["language_id"]
+            isOneToOne: false
+            referencedRelation: "languages"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       player_progress: {
         Row: {
           completed_at: string
           id: string
-          lesson_id: string
+          stage_id: string
           player_id: string
           score: number
           xp_earned: number
@@ -122,7 +168,7 @@ export type Database = {
         Insert: {
           completed_at?: string
           id?: string
-          lesson_id: string
+          stage_id: string
           player_id: string
           score?: number
           xp_earned?: number
@@ -130,7 +176,7 @@ export type Database = {
         Update: {
           completed_at?: string
           id?: string
-          lesson_id?: string
+          stage_id?: string
           player_id?: string
           score?: number
           xp_earned?: number
@@ -170,7 +216,7 @@ export type Database = {
         }
         Relationships: []
       }
-      stages: {
+      lessons: {
         Row: {
           color: string
           created_at: string
@@ -178,8 +224,9 @@ export type Database = {
           display_order: number
           icon: string
           id: string
-          lesson_count: number
-          stage_number: number
+          language_id: string | null
+          stage_count: number
+          lesson_number: number
           title: string
         }
         Insert: {
@@ -189,8 +236,9 @@ export type Database = {
           display_order: number
           icon: string
           id?: string
-          lesson_count?: number
-          stage_number: number
+          language_id?: string | null
+          stage_count?: number
+          lesson_number: number
           title: string
         }
         Update: {
@@ -200,11 +248,20 @@ export type Database = {
           display_order?: number
           icon?: string
           id?: string
-          lesson_count?: number
-          stage_number?: number
+          language_id?: string | null
+          stage_count?: number
+          lesson_number?: number
           title?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "stages_language_id_fkey"
+            columns: ["language_id"]
+            isOneToOne: false
+            referencedRelation: "languages"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
