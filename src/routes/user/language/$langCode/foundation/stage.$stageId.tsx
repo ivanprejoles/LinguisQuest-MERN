@@ -7,37 +7,37 @@ import { Button } from "@/components/ui/button";
 import TracingActivity from "@/components/lq/activities/TracingActivity";
 import MatchingActivity from "@/components/lq/activities/MatchingActivity";
 import MultipleChoiceActivity from "@/components/lq/activities/MultipleChoiceActivity";
-import { fetchLesson, recordLessonCompletion } from "@/lib/linguisquest";
+import { fetchLesson, fetchStage, recordStageCompletion } from "@/lib/linguisquest";
 
-export const Route = createFileRoute("/user/language/$langCode/foundation/lesson/$lessonId")({
+export const Route = createFileRoute("/user/language/$langCode/foundation/stage/$stageId")({
   head: () => ({ meta: [{ title: "Lesson — LinguisQuest" }] }),
   component: LessonPage,
 });
 
 function LessonPage() {
-  const { lessonId } = Route.useParams();
+  const { stageId } = Route.useParams();
   const qc = useQueryClient();
-  const lesson = useQuery({ queryKey: ["lesson", lessonId], queryFn: () => fetchLesson(lessonId) });
+  const stage = useQuery({ queryKey: ["stage", stageId], queryFn: () => fetchStage(stageId) });
 
   const [idx, setIdx] = useState(0);
   const [done, setDone] = useState<number[]>([]);
   const [xp, setXp] = useState(0);
   const [saved, setSaved] = useState(false);
 
-  if (lesson.isLoading) {
+  if (stage.isLoading) {
     return <div className="flex items-center justify-center min-h-screen"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>;
   }
-  if (!lesson.data) {
+  if (!stage.data) {
     return (
       <div className="min-h-screen"><Navigation />
-        <main className="max-w-7xl mx-auto px-4 pt-24"><p className="text-muted-foreground">Lesson not found</p></main>
+        <main className="max-w-7xl mx-auto px-4 pt-24"><p className="text-muted-foreground">Stage not found</p></main>
       </div>
     );
   }
 
-  const L = lesson.data;
-  const complete = done.length === L.activities.length;
-  const cur = L.activities[idx];
+  const S = stage.data;
+  const complete = done.length === S.activities.length;
+  const cur = S.activities[idx];
 
   const onActivityComplete = async (correct: boolean) => {
     if (!correct) return;
@@ -45,10 +45,10 @@ function LessonPage() {
     setDone(nextDone);
     const earned = (cur as { xpReward: number }).xpReward;
     setXp(xp + earned);
-    if (nextDone.length === L.activities.length) {
+    if (nextDone.length === S.activities.length) {
       if (!saved) {
         setSaved(true);
-        await recordLessonCompletion({ lessonId: L.id, xpEarned: L.xp_reward });
+        await recordStageCompletion({ stageId: S.id, xpEarned: S.xp_reward });
         qc.invalidateQueries({ queryKey: ["player"] });
         qc.invalidateQueries({ queryKey: ["done"] });
       }
@@ -64,8 +64,8 @@ function LessonPage() {
         <Link to="/user/dashboard" className="inline-flex items-center gap-2 text-primary hover:opacity-80 mb-4">
           <ChevronLeft className="w-5 h-5" />Back to Dashboard
         </Link>
-        <h1 className="text-4xl font-bold text-foreground mb-2">{L.title}</h1>
-        <p className="text-muted-foreground mb-8">{L.description}</p>
+        <h1 className="text-4xl font-bold text-foreground mb-2">{S.title}</h1>
+        <p className="text-muted-foreground mb-8">{S.description}</p>
 
         <div className="mb-8">
           <div className="flex items-center justify-between mb-2">
@@ -77,11 +77,11 @@ function LessonPage() {
           </div>
         </div>
 
-        {L.vocabulary.length > 0 && (
+        {S.vocabulary.length > 0 && (
           <div className="mb-8 bg-card border border-border rounded-lg p-6">
             <h2 className="text-xl font-bold text-foreground mb-4">Vocabulary</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {L.vocabulary.map((v, i) => (
+              {S.vocabulary.map((v, i) => (
                 <div key={i} className="bg-muted rounded-lg p-4">
                   <p className="font-bold text-foreground">{v.word}</p>
                   <p className="text-sm text-muted-foreground">{v.translation}</p>
@@ -101,7 +101,7 @@ function LessonPage() {
         ) : (
           <div className="bg-gradient-to-br from-emerald-600/20 to-emerald-900/20 border border-emerald-500/50 rounded-lg p-8 text-center">
             <h2 className="text-3xl font-bold text-emerald-400 mb-4">Lesson Complete! 🎉</h2>
-            <p className="text-muted-foreground mb-6">You earned <span className="font-bold text-yellow-400">{L.xp_reward} XP</span></p>
+            <p className="text-muted-foreground mb-6">You earned <span className="font-bold text-yellow-400">{S.xp_reward} XP</span></p>
             <div className="flex gap-4 justify-center">
               <Link to="/user/dashboard" className="px-6 py-3 bg-primary text-primary-foreground rounded-lg font-semibold hover:opacity-90">Back to Dashboard</Link>
               <Button variant="outline" onClick={() => { setIdx(0); setDone([]); setXp(0); setSaved(false); }}>Review Lesson</Button>

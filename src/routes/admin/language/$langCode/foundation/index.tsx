@@ -8,12 +8,16 @@ import { Textarea } from "@/components/ui/textarea";
 import { SortableList } from "@/components/lq/SortableList";
 import {
   fetchLanguageByCode,
-  fetchStagesByLanguage,
-  createStage,
+  fetchLessonsByLanguage,
+  createLesson,
   updateStage,
   deleteStage,
   reorderStages,
   type Stage,
+  deleteLesson,
+  reorderLessons,
+  Lesson,
+  updateLesson,
 } from "@/lib/linguisquest";
 
 export const Route = createFileRoute("/admin/language/$langCode/foundation/")({
@@ -29,9 +33,9 @@ function AdminFoundation() {
   const { langCode } = Route.useParams();
   const qc = useQueryClient();
   const lang = useQuery({ queryKey: ["language", langCode], queryFn: () => fetchLanguageByCode(langCode) });
-  const stages = useQuery({
-    queryKey: ["admin-stages", langCode],
-    queryFn: async () => (lang.data ? fetchStagesByLanguage(lang.data.id) : []),
+  const lessons = useQuery({
+    queryKey: ["admin-lessons", langCode],
+    queryFn: async () => (lang.data ? fetchLessonsByLanguage(lang.data.id) : []),
     enabled: !!lang.data,
   });
 
@@ -42,11 +46,11 @@ function AdminFoundation() {
   const invalidate = () => qc.invalidateQueries({ queryKey: ["admin-stages", langCode] });
 
   const addM = useMutation({
-    mutationFn: () => createStage({ ...form, language_id: lang.data!.id }),
+    mutationFn: () => createLesson({ ...form, language_id: lang.data!.id }),
     onSuccess: () => { setCreating(false); setForm({ title: "", description: "", icon: "📚", color: "#3b82f6" }); invalidate(); },
   });
-  const delM = useMutation({ mutationFn: (id: string) => deleteStage(id), onSuccess: invalidate });
-  const reorderM = useMutation({ mutationFn: (ids: string[]) => reorderStages(ids) });
+  const delM = useMutation({ mutationFn: (id: string) => deleteLesson(id), onSuccess: invalidate });
+  const reorderM = useMutation({ mutationFn: (ids: string[]) => reorderLessons(ids) });
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-card to-background text-foreground">
@@ -62,12 +66,12 @@ function AdminFoundation() {
       <main className="max-w-5xl mx-auto px-6 py-10 space-y-8">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-2xl font-bold">Stages</h2>
-            <p className="text-sm text-muted-foreground">Drag to reorder the learning path. Click a stage to edit its levels.</p>
+            <h2 className="text-2xl font-bold">Lessons</h2>
+            <p className="text-sm text-muted-foreground">Drag to reorder the learning path. Click a lesson to edit its levels.</p>
           </div>
           {!creating && (
             <Button onClick={() => setCreating(true)}>
-              <Plus className="w-4 h-4 mr-1" /> New stage
+              <Plus className="w-4 h-4 mr-1" /> New lesson
             </Button>
           )}
         </div>
@@ -88,21 +92,21 @@ function AdminFoundation() {
           </div>
         )}
 
-        {stages.isLoading ? (
+        {lessons.isLoading ? (
           <Loader2 className="w-6 h-6 animate-spin text-primary" />
-        ) : (stages.data?.length ?? 0) === 0 ? (
-          <p className="text-muted-foreground">No stages yet.</p>
+        ) : (lessons.data?.length ?? 0) === 0 ? (
+          <p className="text-muted-foreground">No lessons yet.</p>
         ) : (
           <SortableList
-            items={stages.data ?? []}
+            items={lessons.data ?? []}
             onReorder={(ids) => reorderM.mutate(ids)}
-            renderItem={(s) => (
-              <StageRow
-                stage={s}
-                editing={editId === s.id}
-                onEditToggle={() => setEditId(editId === s.id ? null : s.id)}
+            renderItem={(l) => (
+              <LessonRow
+                lesson={l}
+                editing={editId === l.id}
+                onEditToggle={() => setEditId(editId === l.id ? null : l.id)}
                 onSaved={() => { setEditId(null); invalidate(); }}
-                onDelete={() => { if (confirm(`Delete stage "${s.title}"? Levels will be deleted too.`)) delM.mutate(s.id); }}
+                onDelete={() => { if (confirm(`Delete lesson "${l.title}"? Levels will be deleted too.`)) delM.mutate(l.id); }}
                 langCode={langCode}
               />
             )}
@@ -113,25 +117,25 @@ function AdminFoundation() {
   );
 }
 
-function StageRow({
-  stage,
+function LessonRow({
+  lesson,
   editing,
   onEditToggle,
   onSaved,
   onDelete,
   langCode,
 }: {
-  stage: Stage;
+  lesson: Lesson;
   editing: boolean;
   onEditToggle: () => void;
   onSaved: () => void;
   onDelete: () => void;
   langCode: string;
 }) {
-  const [draft, setDraft] = useState(stage);
+  const [draft, setDraft] = useState(lesson);
   const save = useMutation({
     mutationFn: () =>
-      updateStage(stage.id, {
+      updateLesson(lesson.id, {
         title: draft.title,
         description: draft.description,
         icon: draft.icon,
@@ -157,16 +161,16 @@ function StageRow({
   }
   return (
     <div className="bg-card border border-border rounded-lg p-4 flex items-center gap-4">
-      <div className="w-12 h-12 rounded-lg flex items-center justify-center text-2xl" style={{ background: stage.color + "33" }}>
-        {stage.icon}
+      <div className="w-12 h-12 rounded-lg flex items-center justify-center text-2xl" style={{ background: lesson.color + "33" }}>
+        {lesson.icon}
       </div>
       <div className="flex-1 min-w-0">
-        <div className="font-bold truncate">{stage.title}</div>
-        <div className="text-sm text-muted-foreground truncate">{stage.description}</div>
-        <div className="text-xs text-muted-foreground mt-1">Stage {stage.stage_number} · {stage.lesson_count} levels</div>
+        <div className="font-bold truncate">{lesson.title}</div>
+        <div className="text-sm text-muted-foreground truncate">{lesson.description}</div>
+        <div className="text-xs text-muted-foreground mt-1">Stage {lesson.lesson_number} · {lesson.stage_count} levels</div>
       </div>
       <div className="flex gap-2">
-        <Link to="/admin/language/$langCode/foundation/lesson/$lessonId/stage/$stageId" params={{ langCode: langCode,lessonId: currentLessonId, stageId: stage.id }}>
+        <Link to="/admin/language/$langCode/foundation/lesson/$lessonId" params={{ langCode: langCode,lessonId: lesson.id }}>
           <Button size="sm" variant="secondary">Levels</Button>
         </Link>
         <Button size="sm" variant="ghost" onClick={onEditToggle}><Pencil className="w-4 h-4" /></Button>

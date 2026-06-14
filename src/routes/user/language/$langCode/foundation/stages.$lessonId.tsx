@@ -3,20 +3,20 @@ import { useQuery } from "@tanstack/react-query";
 import { ChevronLeft, Loader2 } from "lucide-react";
 import Navigation from "@/components/lq/Navigation";
 import LessonCard from "@/components/lq/LessonCard";
-import { fetchLessonsForStage, fetchStage, fetchCompletedLessonIds } from "@/lib/linguisquest";
+import { fetchStagesForLesson, fetchStage, fetchCompletedStageIds, fetchLesson } from "@/lib/linguisquest";
 
-export const Route = createFileRoute("/user/language/$langCode/foundation/lessons/$stageId")({
+export const Route = createFileRoute("/user/language/$langCode/foundation/stages/$lessonId")({
   head: () => ({ meta: [{ title: "Lessons — LinguisQuest" }] }),
-  component: LessonsForStage,
+  component: StagesForLesson,
 });
 
-function LessonsForStage() {
-  const { stageId } = Route.useParams();
+function StagesForLesson() {
+  const { lessonId } = Route.useParams();
   const { langCode } = Route.useParams();
-  const n = parseInt(stageId, 10);
-  const stage = useQuery({ queryKey: ["stage", n], queryFn: () => fetchStage(n) });
-  const lessons = useQuery({ queryKey: ["lessons", n], queryFn: () => fetchLessonsForStage(n) });
-  const done = useQuery({ queryKey: ["done"], queryFn: () => fetchCompletedLessonIds() });
+  const n = parseInt(lessonId, 10);
+  const lesson = useQuery({ queryKey: ["lesson", n], queryFn: () => fetchLesson(n.toString()) });
+  const stages = useQuery({ queryKey: ["stages", n], queryFn: () => fetchStagesForLesson(n) });
+  const done = useQuery({ queryKey: ["done"], queryFn: () => fetchCompletedStageIds() });
   const doneSet = new Set(done.data ?? []);
 
   return (
@@ -27,19 +27,19 @@ function LessonsForStage() {
           <ChevronLeft className="w-5 h-5" />
           Back to Dashboard
         </Link>
-        {stage.data && (
+        {lesson.data && (
           <div className="mb-8">
-            <h1 className="text-4xl font-bold text-foreground mb-2">{stage.data.title}</h1>
-            <p className="text-muted-foreground">{stage.data.description}</p>
+            <h1 className="text-4xl font-bold text-foreground mb-2">{lesson.data.title}</h1>
+            <p className="text-muted-foreground">{lesson.data.description}</p>
           </div>
         )}
-        {lessons.isLoading ? (
+        {stages.isLoading ? (
           <div className="flex justify-center py-12"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>
-        ) : lessons.data && lessons.data.length > 0 ? (
+        ) : stages.data && stages.data.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {lessons.data.map((l) => (
-              <Link key={l.id} to="/user/language/$langCode/foundation/lesson/$lessonId" params={{ langCode, lessonId: l.id }}>
-                <LessonCard lesson={l} done={doneSet.has(l.id)} />
+            {stages.data.map((s) => (
+              <Link key={s.id} to="/user/language/$langCode/foundation/stage/$stageId" params={{ langCode, stageId: s.id }}>
+                <LessonCard lesson={s} done={doneSet.has(s.id)} />
               </Link>
             ))}
           </div>
