@@ -7,7 +7,7 @@ import {
   fetchLanguageByCode,
   fetchPlayer,
   fetchBadges,
-  fetchCompletedLessonIds,
+  fetchCompletedStageIds,
   computeEarnedBadges,
 } from "@/lib/linguisquest";
 
@@ -25,7 +25,7 @@ function LearnHome() {
   const lang = useQuery({ queryKey: ["language", langCode], queryFn: () => fetchLanguageByCode(langCode) });
   const player = useQuery({ queryKey: ["player"], queryFn: () => fetchPlayer() });
   const badges = useQuery({ queryKey: ["badges"], queryFn: fetchBadges });
-  const done = useQuery({ queryKey: ["done"], queryFn: () => fetchCompletedLessonIds() });
+  const done = useQuery({ queryKey: ["done"], queryFn: () => fetchCompletedStageIds() });
   const earned =
     player.data && badges.data && done.data
       ? computeEarnedBadges(player.data, badges.data, done.data.length).length

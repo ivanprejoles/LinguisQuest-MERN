@@ -1,4 +1,4 @@
-import type { Lesson, Stage } from "@/lib/linguisquest";
+import type { Lesson } from "@/lib/linguisquest";
 
 export default function LessonCard({ lesson }: { lesson: Lesson }) {
   return (

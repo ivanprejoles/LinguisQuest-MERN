@@ -4,49 +4,70 @@
 -- =========================================================
 
 -- Content tables
-CREATE TABLE public.stages (
-  id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  stage_number INT  NOT NULL UNIQUE,
-  title        TEXT NOT NULL,
-  description  TEXT NOT NULL,
-  icon         TEXT NOT NULL,
-  color        TEXT NOT NULL,
-  lesson_count INT  NOT NULL DEFAULT 0,
-  display_order INT NOT NULL,
-  created_at   TIMESTAMPTZ NOT NULL DEFAULT now()
+
+CREATE TABLE public.languages (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  code TEXT NOT NULL UNIQUE,
+  name TEXT NOT NULL,
+  flag TEXT NOT NULL DEFAULT '',
+  active BOOLEAN NOT NULL DEFAULT true,
+  display_order INT NOT NULL DEFAULT 0,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
 CREATE TABLE public.lessons (
-  id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  stage_number INT  NOT NULL,
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  language_id UUID REFERENCES public.languages(id) ON DELETE CASCADE,
   lesson_number INT NOT NULL,
-  title        TEXT NOT NULL,
-  description  TEXT NOT NULL,
-  vocabulary   JSONB NOT NULL DEFAULT '[]'::jsonb,
-  activities   JSONB NOT NULL DEFAULT '[]'::jsonb,
-  xp_reward    INT  NOT NULL DEFAULT 50,
-  estimated_duration INT NOT NULL DEFAULT 10,
+  title TEXT NOT NULL,
+  description TEXT NOT NULL,
+  icon TEXT NOT NULL,
+  color TEXT NOT NULL,
+  stage_count INT NOT NULL DEFAULT 0,
   display_order INT NOT NULL,
-  created_at   TIMESTAMPTZ NOT NULL DEFAULT now(),
-  UNIQUE (stage_number, lesson_number)
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE public.stages (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  language_id UUID REFERENCES public.languages(id) ON DELETE CASCADE,
+
+  stage_number INT NOT NULL,
+  lesson_number INT NOT NULL,
+
+  title TEXT NOT NULL,
+  description TEXT NOT NULL,
+
+  vocabulary JSONB NOT NULL DEFAULT '[]'::jsonb,
+  activities JSONB NOT NULL DEFAULT '[]'::jsonb,
+
+  xp_reward INT NOT NULL DEFAULT 50,
+  estimated_duration INT NOT NULL DEFAULT 10,
+
+  icon TEXT NOT NULL DEFAULT '',
+  color TEXT NOT NULL DEFAULT '',
+
+  display_order INT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
 CREATE TABLE public.badges (
-  id           TEXT PRIMARY KEY,
-  name         TEXT NOT NULL,
-  description  TEXT NOT NULL,
-  icon         TEXT NOT NULL,
-  requirement_type  TEXT NOT NULL,
-  requirement_value INT  NOT NULL,
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  description TEXT NOT NULL,
+  icon TEXT NOT NULL,
+  requirement_type TEXT NOT NULL,
+  requirement_value INT NOT NULL,
   display_order INT NOT NULL DEFAULT 0
 );
 
 -- Tracking tables (single guest player by default, but supports many "players")
 CREATE TABLE public.players (
-  id         TEXT PRIMARY KEY,
-  username   TEXT NOT NULL,
-  total_xp   INT  NOT NULL DEFAULT 0,
-  level      INT  NOT NULL DEFAULT 1,
+  id TEXT PRIMARY KEY,
+  username TEXT NOT NULL,
+  total_xp INT NOT NULL DEFAULT 0,
+  level INT NOT NULL DEFAULT 1,
   current_streak INT NOT NULL DEFAULT 0,
   longest_streak INT NOT NULL DEFAULT 0,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
@@ -64,10 +85,10 @@ CREATE TABLE public.player_progress (
 );
 
 CREATE TABLE public.activity_log (
-  id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  player_id  TEXT NOT NULL,
-  action     TEXT NOT NULL,
-  details    JSONB NOT NULL DEFAULT '{}'::jsonb,
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  player_id TEXT NOT NULL REFERENCES public.players(id) ON DELETE CASCADE,
+  action TEXT NOT NULL,
+  details JSONB NOT NULL DEFAULT '{}'::jsonb,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
@@ -99,7 +120,7 @@ CREATE POLICY "demo open"  ON public.activity_log    FOR ALL USING (true) WITH C
 -- SEED DATA
 -- =========================================================
 
-INSERT INTO public.stages (stage_number, title, description, icon, color, lesson_count, display_order) VALUES
+INSERT INTO public.lessons (lesson_number, title, description, icon, color, stage_count, display_order) VALUES
   (1,'Letters & Sounds','Learn the Filipino alphabet and basic pronunciation','🔤','#3B82F6',5,1),
   (2,'Basic Greetings','Master essential greetings and polite expressions','👋','#10B981',4,2),
   (3,'Everyday Vocabulary','Learn common words for daily interactions','💬','#F59E0B',6,3),
@@ -107,8 +128,8 @@ INSERT INTO public.stages (stage_number, title, description, icon, color, lesson
   (5,'Conversational Phrases','Build sentences and hold simple conversations','💭','#EC4899',5,5),
   (6,'Confidence & Communication','Master fluent conversations and cultural nuances','🌟','#14B8A6',5,6);
 
--- Stage 1 lessons
-INSERT INTO public.lessons (stage_number, lesson_number, title, description, vocabulary, activities, xp_reward, estimated_duration, display_order) VALUES
+-- Stage 1 stages
+INSERT INTO public.stages (lesson_number, stage_number, title, description, vocabulary, activities, xp_reward, estimated_duration, display_order) VALUES
 (1,1,'Vowels (A, E, I, O, U)','Learn to pronounce Filipino vowels correctly',
  '[{"word":"A","translation":"pronounced \"ah\"","pronunciation":"/ɑ/"},
    {"word":"E","translation":"pronounced \"eh\"","pronunciation":"/ɛ/"},
@@ -145,8 +166,8 @@ INSERT INTO public.lessons (stage_number, lesson_number, title, description, voc
  '[{"type":"multipleChoice","question":"How is the letter P pronounced?","options":[{"id":"1","text":"peh","isCorrect":true},{"id":"2","text":"beh","isCorrect":false},{"id":"3","text":"teh","isCorrect":false}],"xpReward":25}]'::jsonb,
  75,12,5);
 
--- Stage 2 lessons
-INSERT INTO public.lessons (stage_number, lesson_number, title, description, vocabulary, activities, xp_reward, estimated_duration, display_order) VALUES
+-- Stage 2 stages
+INSERT INTO public.stages (lesson_number, stage_number, title, description, vocabulary, activities, xp_reward, estimated_duration, display_order) VALUES
 (2,1,'Hello & Goodbye','Master essential greetings',
  '[{"word":"Kumusta","translation":"Hello/How are you?","example":"Kumusta ka?"},
    {"word":"Maayos","translation":"Good/Fine","example":"Maayos ako"},

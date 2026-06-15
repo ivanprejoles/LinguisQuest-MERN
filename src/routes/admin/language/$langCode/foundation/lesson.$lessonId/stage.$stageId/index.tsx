@@ -17,6 +17,7 @@ import {
   fetchLesson,
   fetchStage,
   updateLesson,
+  updateStage,
   type Activity,
 } from "@/lib/linguisquest";
 
@@ -26,7 +27,7 @@ export const Route = createFileRoute("/admin/language/$langCode/foundation/lesso
     const l = await fetchLanguageByCode(params.langCode);
     if (!l) throw redirect({ to: "/admin" });
   },
-  component: AdminLessonEditor,
+  component: AdminStageEditor,
 });
 
 const newId = () => Math.random().toString(36).slice(2, 10);
@@ -75,9 +76,9 @@ function AdminStageEditor() {
       const err = validate(acts);
       if (err) { setError(err); throw new Error(err); }
       setError(null);
-      await updateLesson(lessonId, { activities: normalize(acts) });
+      await updateStage(stageId, { activities: normalize(acts) });
     },
-    onSuccess: () => { setDirty(false); qc.invalidateQueries({ queryKey: ["lesson-edit", lessonId] }); },
+    onSuccess: () => { setDirty(false); qc.invalidateQueries({ queryKey: ["stage-edit", stageId] }); },
   });
 
   const update = (i: number, patch: Partial<Activity>) => {
@@ -87,7 +88,7 @@ function AdminStageEditor() {
   const remove = (i: number) => { setActs(acts.filter((_, idx) => idx !== i)); setDirty(true); };
   const add = (type: Activity["type"]) => { setActs([...acts, emptyActivity(type)]); setDirty(true); };
 
-  if (lesson.isLoading) {
+  if (stage.isLoading) {
     return <div className="min-h-screen flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>;
   }
 
@@ -95,7 +96,7 @@ function AdminStageEditor() {
     <div className="min-h-screen bg-gradient-to-br from-background via-card to-background text-foreground">
       <header className="border-b border-border bg-card/80 backdrop-blur-md sticky top-0 z-30">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <h1 className="text-xl font-bold truncate">Admin · {lesson.data?.title} · Activities</h1>
+          <h1 className="text-xl font-bold truncate">Admin · {stage.data?.title} · Activities</h1>
           <div className="flex items-center gap-3">
             <Link to="/admin/language/$langCode/foundation" params={{ langCode }} className="text-sm text-muted-foreground hover:text-foreground inline-flex items-center gap-2">
               <ArrowLeft className="w-4 h-4" /> Roadmap

@@ -385,7 +385,7 @@ export async function recordStageCompletion(args: {
   });
 }
 
-export async function fetchCompletedLessonIds(
+export async function fetchCompletedStageIds(
   playerId = GUEST_ID,
 ): Promise<string[]> {
   const { data, error } = await supabase
