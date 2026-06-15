@@ -5,8 +5,9 @@ import StageCard from "@/components/lq/StageCard";
 import UserStats from "@/components/lq/UserStats";
 import { Loader2 } from "lucide-react";
 import {
-  fetchStages, fetchPlayer, fetchBadges, fetchCompletedLessonIds, computeEarnedBadges,
+  fetchLessons, fetchPlayer, fetchBadges, fetchCompletedStageIds, computeEarnedBadges,
 } from "@/lib/linguisquest";
+import LessonCard from "@/components/lq/LessonCard";
 
 export const Route = createFileRoute("/user/language/$langCode/foundation/")({
   head: () => ({ meta: [{ title: "Dashboard — LinguisQuest" }] }),
@@ -15,10 +16,10 @@ export const Route = createFileRoute("/user/language/$langCode/foundation/")({
 
 function Dashboard() {
   const { langCode } = Route.useParams();
-  const stages = useQuery({ queryKey: ["stages"], queryFn: fetchStages });
+  const lessons = useQuery({ queryKey: ["lessons"], queryFn: fetchLessons });
   const player = useQuery({ queryKey: ["player"], queryFn: () => fetchPlayer() });
   const badges = useQuery({ queryKey: ["badges"], queryFn: fetchBadges });
-  const done = useQuery({ queryKey: ["done"], queryFn: () => fetchCompletedLessonIds() });
+  const done = useQuery({ queryKey: ["done"], queryFn: () => fetchCompletedStageIds() });
 
   const earned = player.data && badges.data && done.data
     ? computeEarnedBadges(player.data, badges.data, done.data.length).length
@@ -46,13 +47,13 @@ function Dashboard() {
 
         <div className="mt-12">
           <h2 className="text-2xl font-bold text-foreground mb-6">Learning Stages</h2>
-          {stages.isLoading ? (
+          {lessons.isLoading ? (
             <div className="flex justify-center py-12"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {stages.data?.map((stage) => (
-                <Link key={stage.id} to="/user/language/$langCode/foundation/lessons/$stageId" params={{ langCode: langCode, stageId: String(stage.stage_number) }}>
-                  <StageCard stage={stage} />
+              {lessons.data?.map((lesson) => (
+                <Link key={lesson.id} to="/user/language/$langCode/foundation/stages/$lessonId" params={{ langCode: langCode, lessonId: String(lesson.lesson_number) }}>
+                  <LessonCard lesson={lesson} />
                 </Link>
               ))}
             </div>

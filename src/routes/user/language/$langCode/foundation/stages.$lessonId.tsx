@@ -3,7 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { ChevronLeft, Loader2 } from "lucide-react";
 import Navigation from "@/components/lq/Navigation";
 import LessonCard from "@/components/lq/LessonCard";
-import { fetchStagesForLesson, fetchStage, fetchCompletedStageIds, fetchLesson } from "@/lib/linguisquest";
+import { fetchStagesForLesson, fetchLesson, fetchCompletedStageIds } from "@/lib/linguisquest";
+import StageCard from "@/components/lq/StageCard";
 
 export const Route = createFileRoute("/user/language/$langCode/foundation/stages/$lessonId")({
   head: () => ({ meta: [{ title: "Lessons — LinguisQuest" }] }),
@@ -39,7 +40,7 @@ function StagesForLesson() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {stages.data.map((s) => (
               <Link key={s.id} to="/user/language/$langCode/foundation/stage/$stageId" params={{ langCode, stageId: s.id }}>
-                <LessonCard lesson={s} done={doneSet.has(s.id)} />
+                <StageCard stage={s} done={doneSet.has(s.id)} />
               </Link>
             ))}
           </div>
