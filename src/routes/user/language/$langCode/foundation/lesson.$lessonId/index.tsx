@@ -6,7 +6,7 @@ import LessonCard from "@/components/lq/LessonCard";
 import { fetchStagesForLesson, fetchLesson, fetchCompletedStageIds } from "@/lib/linguisquest";
 import StageCard from "@/components/lq/StageCard";
 
-export const Route = createFileRoute("/user/language/$langCode/foundation/stages/$lessonId")({
+export const Route = createFileRoute("/user/language/$langCode/foundation/lesson/$lessonId/")({
   head: () => ({ meta: [{ title: "Lessons — LinguisQuest" }] }),
   component: StagesForLesson,
 });
@@ -39,7 +39,7 @@ function StagesForLesson() {
         ) : stages.data && stages.data.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {stages.data.map((s) => (
-              <Link key={s.id} to="/user/language/$langCode/foundation/stage/$stageId" params={{ langCode, stageId: s.id }}>
+              <Link key={s.id} to="/user/language/$langCode/foundation/lesson/$lessonId/stage/$stageId" params={{ langCode, lessonId, stageId: s.id }}>
                 <StageCard stage={s} done={doneSet.has(s.id)} />
               </Link>
             ))}

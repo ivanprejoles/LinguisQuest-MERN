@@ -265,11 +265,14 @@ export async function fetchStagesForLesson(
 }
 
 export async function fetchStage(id: string): Promise<Stage | null> {
+  console.log(id)
   const { data, error } = await supabase
     .from("stages")
     .select("*")
     .eq("id", id)
     .maybeSingle();
+    console.log(error)
+    console.log(data)
 
   if (error) throw error;
   return (data ?? null) as Stage | null;

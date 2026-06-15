@@ -26,9 +26,9 @@ import { Route as UserLanguageLangCodeAiConversionIndexRouteImport } from './rou
 import { Route as AdminLanguageLangCodeScenariosIndexRouteImport } from './routes/admin/language/$langCode/scenarios/index'
 import { Route as AdminLanguageLangCodeFoundationIndexRouteImport } from './routes/admin/language/$langCode/foundation/index'
 import { Route as AdminLanguageLangCodeAiConversionIndexRouteImport } from './routes/admin/language/$langCode/ai-conversion/index'
-import { Route as UserLanguageLangCodeFoundationStagesLessonIdRouteImport } from './routes/user/language/$langCode/foundation/stages.$lessonId'
-import { Route as UserLanguageLangCodeFoundationStageStageIdRouteImport } from './routes/user/language/$langCode/foundation/stage.$stageId'
+import { Route as UserLanguageLangCodeFoundationLessonLessonIdIndexRouteImport } from './routes/user/language/$langCode/foundation/lesson.$lessonId/index'
 import { Route as AdminLanguageLangCodeFoundationLessonLessonIdIndexRouteImport } from './routes/admin/language/$langCode/foundation/lesson.$lessonId/index'
+import { Route as UserLanguageLangCodeFoundationLessonLessonIdStageStageIdIndexRouteImport } from './routes/user/language/$langCode/foundation/lesson.$lessonId/stage.$stageId/index'
 import { Route as AdminLanguageLangCodeFoundationLessonLessonIdStageStageIdIndexRouteImport } from './routes/admin/language/$langCode/foundation/lesson.$lessonId/stage.$stageId/index'
 
 const IndexRoute = IndexRouteImport.update({
@@ -124,16 +124,10 @@ const AdminLanguageLangCodeAiConversionIndexRoute =
     path: '/admin/language/$langCode/ai-conversion/',
     getParentRoute: () => rootRouteImport,
   } as any)
-const UserLanguageLangCodeFoundationStagesLessonIdRoute =
-  UserLanguageLangCodeFoundationStagesLessonIdRouteImport.update({
-    id: '/user/language/$langCode/foundation/stages/$lessonId',
-    path: '/user/language/$langCode/foundation/stages/$lessonId',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const UserLanguageLangCodeFoundationStageStageIdRoute =
-  UserLanguageLangCodeFoundationStageStageIdRouteImport.update({
-    id: '/user/language/$langCode/foundation/stage/$stageId',
-    path: '/user/language/$langCode/foundation/stage/$stageId',
+const UserLanguageLangCodeFoundationLessonLessonIdIndexRoute =
+  UserLanguageLangCodeFoundationLessonLessonIdIndexRouteImport.update({
+    id: '/user/language/$langCode/foundation/lesson/$lessonId/',
+    path: '/user/language/$langCode/foundation/lesson/$lessonId/',
     getParentRoute: () => rootRouteImport,
   } as any)
 const AdminLanguageLangCodeFoundationLessonLessonIdIndexRoute =
@@ -142,6 +136,14 @@ const AdminLanguageLangCodeFoundationLessonLessonIdIndexRoute =
     path: '/admin/language/$langCode/foundation/lesson/$lessonId/',
     getParentRoute: () => rootRouteImport,
   } as any)
+const UserLanguageLangCodeFoundationLessonLessonIdStageStageIdIndexRoute =
+  UserLanguageLangCodeFoundationLessonLessonIdStageStageIdIndexRouteImport.update(
+    {
+      id: '/user/language/$langCode/foundation/lesson/$lessonId/stage/$stageId/',
+      path: '/user/language/$langCode/foundation/lesson/$lessonId/stage/$stageId/',
+      getParentRoute: () => rootRouteImport,
+    } as any,
+  )
 const AdminLanguageLangCodeFoundationLessonLessonIdStageStageIdIndexRoute =
   AdminLanguageLangCodeFoundationLessonLessonIdStageStageIdIndexRouteImport.update(
     {
@@ -169,10 +171,10 @@ export interface FileRoutesByFullPath {
   '/user/language/$langCode/ai-conversion/': typeof UserLanguageLangCodeAiConversionIndexRoute
   '/user/language/$langCode/foundation/': typeof UserLanguageLangCodeFoundationIndexRoute
   '/user/language/$langCode/scenarios/': typeof UserLanguageLangCodeScenariosIndexRoute
-  '/user/language/$langCode/foundation/stage/$stageId': typeof UserLanguageLangCodeFoundationStageStageIdRoute
-  '/user/language/$langCode/foundation/stages/$lessonId': typeof UserLanguageLangCodeFoundationStagesLessonIdRoute
   '/admin/language/$langCode/foundation/lesson/$lessonId/': typeof AdminLanguageLangCodeFoundationLessonLessonIdIndexRoute
+  '/user/language/$langCode/foundation/lesson/$lessonId/': typeof UserLanguageLangCodeFoundationLessonLessonIdIndexRoute
   '/admin/language/$langCode/foundation/lesson/$lessonId/stage/$stageId/': typeof AdminLanguageLangCodeFoundationLessonLessonIdStageStageIdIndexRoute
+  '/user/language/$langCode/foundation/lesson/$lessonId/stage/$stageId/': typeof UserLanguageLangCodeFoundationLessonLessonIdStageStageIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -192,10 +194,10 @@ export interface FileRoutesByTo {
   '/user/language/$langCode/ai-conversion': typeof UserLanguageLangCodeAiConversionIndexRoute
   '/user/language/$langCode/foundation': typeof UserLanguageLangCodeFoundationIndexRoute
   '/user/language/$langCode/scenarios': typeof UserLanguageLangCodeScenariosIndexRoute
-  '/user/language/$langCode/foundation/stage/$stageId': typeof UserLanguageLangCodeFoundationStageStageIdRoute
-  '/user/language/$langCode/foundation/stages/$lessonId': typeof UserLanguageLangCodeFoundationStagesLessonIdRoute
   '/admin/language/$langCode/foundation/lesson/$lessonId': typeof AdminLanguageLangCodeFoundationLessonLessonIdIndexRoute
+  '/user/language/$langCode/foundation/lesson/$lessonId': typeof UserLanguageLangCodeFoundationLessonLessonIdIndexRoute
   '/admin/language/$langCode/foundation/lesson/$lessonId/stage/$stageId': typeof AdminLanguageLangCodeFoundationLessonLessonIdStageStageIdIndexRoute
+  '/user/language/$langCode/foundation/lesson/$lessonId/stage/$stageId': typeof UserLanguageLangCodeFoundationLessonLessonIdStageStageIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -216,10 +218,10 @@ export interface FileRoutesById {
   '/user/language/$langCode/ai-conversion/': typeof UserLanguageLangCodeAiConversionIndexRoute
   '/user/language/$langCode/foundation/': typeof UserLanguageLangCodeFoundationIndexRoute
   '/user/language/$langCode/scenarios/': typeof UserLanguageLangCodeScenariosIndexRoute
-  '/user/language/$langCode/foundation/stage/$stageId': typeof UserLanguageLangCodeFoundationStageStageIdRoute
-  '/user/language/$langCode/foundation/stages/$lessonId': typeof UserLanguageLangCodeFoundationStagesLessonIdRoute
   '/admin/language/$langCode/foundation/lesson/$lessonId/': typeof AdminLanguageLangCodeFoundationLessonLessonIdIndexRoute
+  '/user/language/$langCode/foundation/lesson/$lessonId/': typeof UserLanguageLangCodeFoundationLessonLessonIdIndexRoute
   '/admin/language/$langCode/foundation/lesson/$lessonId/stage/$stageId/': typeof AdminLanguageLangCodeFoundationLessonLessonIdStageStageIdIndexRoute
+  '/user/language/$langCode/foundation/lesson/$lessonId/stage/$stageId/': typeof UserLanguageLangCodeFoundationLessonLessonIdStageStageIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -241,10 +243,10 @@ export interface FileRouteTypes {
     | '/user/language/$langCode/ai-conversion/'
     | '/user/language/$langCode/foundation/'
     | '/user/language/$langCode/scenarios/'
-    | '/user/language/$langCode/foundation/stage/$stageId'
-    | '/user/language/$langCode/foundation/stages/$lessonId'
     | '/admin/language/$langCode/foundation/lesson/$lessonId/'
+    | '/user/language/$langCode/foundation/lesson/$lessonId/'
     | '/admin/language/$langCode/foundation/lesson/$lessonId/stage/$stageId/'
+    | '/user/language/$langCode/foundation/lesson/$lessonId/stage/$stageId/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -264,10 +266,10 @@ export interface FileRouteTypes {
     | '/user/language/$langCode/ai-conversion'
     | '/user/language/$langCode/foundation'
     | '/user/language/$langCode/scenarios'
-    | '/user/language/$langCode/foundation/stage/$stageId'
-    | '/user/language/$langCode/foundation/stages/$lessonId'
     | '/admin/language/$langCode/foundation/lesson/$lessonId'
+    | '/user/language/$langCode/foundation/lesson/$lessonId'
     | '/admin/language/$langCode/foundation/lesson/$lessonId/stage/$stageId'
+    | '/user/language/$langCode/foundation/lesson/$lessonId/stage/$stageId'
   id:
     | '__root__'
     | '/'
@@ -287,10 +289,10 @@ export interface FileRouteTypes {
     | '/user/language/$langCode/ai-conversion/'
     | '/user/language/$langCode/foundation/'
     | '/user/language/$langCode/scenarios/'
-    | '/user/language/$langCode/foundation/stage/$stageId'
-    | '/user/language/$langCode/foundation/stages/$lessonId'
     | '/admin/language/$langCode/foundation/lesson/$lessonId/'
+    | '/user/language/$langCode/foundation/lesson/$lessonId/'
     | '/admin/language/$langCode/foundation/lesson/$lessonId/stage/$stageId/'
+    | '/user/language/$langCode/foundation/lesson/$lessonId/stage/$stageId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -311,10 +313,10 @@ export interface RootRouteChildren {
   UserLanguageLangCodeAiConversionIndexRoute: typeof UserLanguageLangCodeAiConversionIndexRoute
   UserLanguageLangCodeFoundationIndexRoute: typeof UserLanguageLangCodeFoundationIndexRoute
   UserLanguageLangCodeScenariosIndexRoute: typeof UserLanguageLangCodeScenariosIndexRoute
-  UserLanguageLangCodeFoundationStageStageIdRoute: typeof UserLanguageLangCodeFoundationStageStageIdRoute
-  UserLanguageLangCodeFoundationStagesLessonIdRoute: typeof UserLanguageLangCodeFoundationStagesLessonIdRoute
   AdminLanguageLangCodeFoundationLessonLessonIdIndexRoute: typeof AdminLanguageLangCodeFoundationLessonLessonIdIndexRoute
+  UserLanguageLangCodeFoundationLessonLessonIdIndexRoute: typeof UserLanguageLangCodeFoundationLessonLessonIdIndexRoute
   AdminLanguageLangCodeFoundationLessonLessonIdStageStageIdIndexRoute: typeof AdminLanguageLangCodeFoundationLessonLessonIdStageStageIdIndexRoute
+  UserLanguageLangCodeFoundationLessonLessonIdStageStageIdIndexRoute: typeof UserLanguageLangCodeFoundationLessonLessonIdStageStageIdIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -438,18 +440,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminLanguageLangCodeAiConversionIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/user/language/$langCode/foundation/stages/$lessonId': {
-      id: '/user/language/$langCode/foundation/stages/$lessonId'
-      path: '/user/language/$langCode/foundation/stages/$lessonId'
-      fullPath: '/user/language/$langCode/foundation/stages/$lessonId'
-      preLoaderRoute: typeof UserLanguageLangCodeFoundationStagesLessonIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/user/language/$langCode/foundation/stage/$stageId': {
-      id: '/user/language/$langCode/foundation/stage/$stageId'
-      path: '/user/language/$langCode/foundation/stage/$stageId'
-      fullPath: '/user/language/$langCode/foundation/stage/$stageId'
-      preLoaderRoute: typeof UserLanguageLangCodeFoundationStageStageIdRouteImport
+    '/user/language/$langCode/foundation/lesson/$lessonId/': {
+      id: '/user/language/$langCode/foundation/lesson/$lessonId/'
+      path: '/user/language/$langCode/foundation/lesson/$lessonId'
+      fullPath: '/user/language/$langCode/foundation/lesson/$lessonId/'
+      preLoaderRoute: typeof UserLanguageLangCodeFoundationLessonLessonIdIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/language/$langCode/foundation/lesson/$lessonId/': {
@@ -457,6 +452,13 @@ declare module '@tanstack/react-router' {
       path: '/admin/language/$langCode/foundation/lesson/$lessonId'
       fullPath: '/admin/language/$langCode/foundation/lesson/$lessonId/'
       preLoaderRoute: typeof AdminLanguageLangCodeFoundationLessonLessonIdIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/user/language/$langCode/foundation/lesson/$lessonId/stage/$stageId/': {
+      id: '/user/language/$langCode/foundation/lesson/$lessonId/stage/$stageId/'
+      path: '/user/language/$langCode/foundation/lesson/$lessonId/stage/$stageId'
+      fullPath: '/user/language/$langCode/foundation/lesson/$lessonId/stage/$stageId/'
+      preLoaderRoute: typeof UserLanguageLangCodeFoundationLessonLessonIdStageStageIdIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/language/$langCode/foundation/lesson/$lessonId/stage/$stageId/': {
@@ -493,14 +495,14 @@ const rootRouteChildren: RootRouteChildren = {
     UserLanguageLangCodeFoundationIndexRoute,
   UserLanguageLangCodeScenariosIndexRoute:
     UserLanguageLangCodeScenariosIndexRoute,
-  UserLanguageLangCodeFoundationStageStageIdRoute:
-    UserLanguageLangCodeFoundationStageStageIdRoute,
-  UserLanguageLangCodeFoundationStagesLessonIdRoute:
-    UserLanguageLangCodeFoundationStagesLessonIdRoute,
   AdminLanguageLangCodeFoundationLessonLessonIdIndexRoute:
     AdminLanguageLangCodeFoundationLessonLessonIdIndexRoute,
+  UserLanguageLangCodeFoundationLessonLessonIdIndexRoute:
+    UserLanguageLangCodeFoundationLessonLessonIdIndexRoute,
   AdminLanguageLangCodeFoundationLessonLessonIdStageStageIdIndexRoute:
     AdminLanguageLangCodeFoundationLessonLessonIdStageStageIdIndexRoute,
+  UserLanguageLangCodeFoundationLessonLessonIdStageStageIdIndexRoute:
+    UserLanguageLangCodeFoundationLessonLessonIdStageStageIdIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

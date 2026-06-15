@@ -9,7 +9,7 @@ import MatchingActivity from "@/components/lq/activities/MatchingActivity";
 import MultipleChoiceActivity from "@/components/lq/activities/MultipleChoiceActivity";
 import { fetchLesson, fetchStage, recordStageCompletion } from "@/lib/linguisquest";
 
-export const Route = createFileRoute("/user/language/$langCode/foundation/stage/$stageId")({
+export const Route = createFileRoute("/user/language/$langCode/foundation/lesson/$lessonId/stage/$stageId/")({
   head: () => ({ meta: [{ title: "Lesson — LinguisQuest" }] }),
   component: LessonPage,
 });
@@ -69,11 +69,11 @@ function LessonPage() {
 
         <div className="mb-8">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-semibold text-muted-foreground">Activity {Math.min(idx + 1, L.activities.length)} of {L.activities.length}</span>
+            <span className="text-sm font-semibold text-muted-foreground">Activity {Math.min(idx + 1, S.activities.length)} of {S.activities.length}</span>
             <span className="text-sm font-semibold text-yellow-400">+{xp} XP</span>
           </div>
           <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
-            <div className="h-full bg-primary transition-all duration-300" style={{ width: `${(done.length / L.activities.length) * 100}%` }} />
+            <div className="h-full bg-primary transition-all duration-300" style={{ width: `${(done.length / S.activities.length) * 100}%` }} />
           </div>
         </div>
 

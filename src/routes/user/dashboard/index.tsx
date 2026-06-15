@@ -50,11 +50,11 @@ function Dashboard() {
             <div className="flex justify-center py-12"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {/* {lessons.data?.map((lesson) => (
-                <Link key={lesson.id} to="/user/language/$langCode/foundation/stages/$lessonId" params={{ langCode:,lessonId: lesson.id }}>
+              {lessons.data?.map((lesson) => (
+                <Link key={lesson.id} to="/user/language/$langCode/foundation/lesson/$lessonId" params={{ langCode,lessonId: lesson.id }}>
                   <LessonCard lesson={lesson} />
                 </Link>
-              ))} */}
+              ))}
             </div>
           )}
         </div>

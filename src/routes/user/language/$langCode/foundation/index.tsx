@@ -52,7 +52,7 @@ function Dashboard() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {lessons.data?.map((lesson) => (
-                <Link key={lesson.id} to="/user/language/$langCode/foundation/stages/$lessonId" params={{ langCode: langCode, lessonId: String(lesson.lesson_number) }}>
+                <Link key={lesson.id} to="/user/language/$langCode/foundation/lesson/$lessonId" params={{ langCode: langCode, lessonId: String(lesson.lesson_number) }}>
                   <LessonCard lesson={lesson} />
                 </Link>
               ))}
